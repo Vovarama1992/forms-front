@@ -9,7 +9,8 @@ export type AppConfig = {
 }
 
 const appConfig: AppConfig = {
-    apiPrefix: 'https://app.opticard.co/api',
+    //apiPrefix: 'https://app.opticard.co/api',
+    apiPrefix:  "http://127.0.0.1:3001/api",
     authenticatedEntryPath: '/home',
     unAuthenticatedEntryPath: '/sign-in',
     locale: 'en',

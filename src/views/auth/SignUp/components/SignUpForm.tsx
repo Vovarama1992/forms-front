@@ -36,7 +36,7 @@ const validationSchema: ZodType<SignUpFormSchema> = z
 
 const rolesList = [
     { label: 'Частное лицо', value: 'PRIVATE_PERSON', },
-    { label: 'Индивидуальный предприниматель', value: 'INDIVIDUAL_ENTERPRENEUR', },
+    { label: 'Индивидуальный предприниматель', value: 'INDIVIDUAL_ENTREPRENEUR', },
     { label: 'Работник компании', value: 'COMPANY_EMPLOYEE', }
 ]
 
