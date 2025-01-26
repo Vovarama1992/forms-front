@@ -4,7 +4,7 @@ import NestedArray from "./NestedAnwsers";
 import { Button, FormItem, Input } from '@/components/ui'
 import { HiMinus } from 'react-icons/hi'
 
-export default function FormQuestions({ control, errors, register, setValue, getValues }) {
+export default function FormQuestions({ control, errors, register }) {
     const { fields, append, remove } = useFieldArray({
         control,
         name: "customQuestions"
