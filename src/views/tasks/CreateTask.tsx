@@ -20,8 +20,8 @@ type FormSchema = {
         name: string
         questions: []
     }[],
-    taskName: string,
-    taskDescription: {textContent?: string}
+    label: string,
+    description: {textContent?: string}
 }
 
 const validationSchema: ZodType<FormSchema> = z.object({
@@ -41,8 +41,8 @@ const validationSchema: ZodType<FormSchema> = z.object({
             }
         )
     ),
-    taskName: z.string().min(1,{message: 'Обязательное поле'} ),
-    taskDescription: z.object({
+    label: z.string().min(1,{message: 'Обязательное поле'} ),
+    description: z.object({
         textContent: z.string()
     }).optional(),
 })
@@ -50,7 +50,7 @@ const validationSchema: ZodType<FormSchema> = z.object({
 const DynamicForm = () => {
 
     const defaultValues = {
-            taskName: '',
+            label: '',
             taskDescription: '',
             images: [
                 {
@@ -96,12 +96,12 @@ const DynamicForm = () => {
                         <FormItem
                             layout="vertical"
                             label="Текст задания"
-                            invalid={Boolean(errors.taskName)}
-                            errorMessage={errors.taskName?.message}
+                            invalid={Boolean(errors.label)}
+                            errorMessage={errors.label?.message}
                             className="mb-0"
                         >
                             <Controller
-                                name="taskName"
+                                name="label"
                                 control={control}
                                 render={({ field }) =>
                                     <Input
