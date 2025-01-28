@@ -1,30 +1,50 @@
 import React from "react";
-import { useFieldArray } from "react-hook-form";
+import { Controller, useFieldArray } from 'react-hook-form'
 import { Input, Button, FormItem } from '@/components/ui'
 import { HiMinus } from 'react-icons/hi'
 
 // eslint-disable-next-line react-refresh/only-export-components
-export default ({ nestIndex, control, register }) => {
+export default ({ nestIndex, control, errors }) => {
     const { fields, remove, append } = useFieldArray({
         control,
-        name: `test[${nestIndex}].nestedArray`
+        name: `customQuestions[${nestIndex}].answers`
     });
+
+    console.log(fields);
 
     return (
         <div>
             {fields.map((item, k) => {
                 return (
-                    <div key={item.id} style={{ marginLeft: 20 }}>
+                    <div key={item.id}>
                         <FormItem
                             label="Ответ"
-
+                            invalid={Boolean(errors.customQuestions?.[nestIndex]?.answers[k]?.value)}
+                            errorMessage={errors.customQuestions?.[nestIndex]?.answers[k]?.value?.message}
                         >
-                            <Input
-                                placeholder="Введите ответ"
+                            <Controller
                                 name={`customQuestions[${nestIndex}].answers[${k}].value`}
-                                defaultValue={item.value}
+                                control={control}
+                                render={({ field }) =>
+                                    <Input
+                                        type="text"
+                                        autoComplete="off"
+                                        placeholder="Введите ответ"
+                                        {...field}
+                                    />
+                                }
                             />
                         </FormItem>
+                        {/*<FormItem*/}
+                        {/*    label="Ответ"*/}
+                        {/*>*/}
+
+                        {/*    <Input*/}
+                        {/*        placeholder="Введите ответ"*/}
+                        {/*        name={`customQuestions[${nestIndex}].answers[${k}].value`}*/}
+                        {/*        defaultValue={item.value}*/}
+                        {/*    />*/}
+                        {/*</FormItem>*/}
 
                         <Button
                             type="button"
@@ -36,7 +56,6 @@ export default ({ nestIndex, control, register }) => {
                     </div>
                 );
             })}
-
             <Button
                 type="button"
                 onClick={() =>

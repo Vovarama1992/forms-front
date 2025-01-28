@@ -1,5 +1,6 @@
 import {
-    NAV_ITEM_TYPE_ITEM,
+    NAV_ITEM_TYPE_COLLAPSE,
+    NAV_ITEM_TYPE_ITEM
 } from '@/constants/navigation.constant'
 
 import type { NavigationTree } from '@/@types/navigation'
@@ -16,14 +17,35 @@ const navigationConfig: NavigationTree[] = [
         subMenu: [],
     },
     {
-        key: 'createTaskItem',
-        path: '/create-task',
-        title: 'Cоздать задание',
-        translateKey: 'nav.createTask',
-        icon: 'groupSingleMenu',
-        type: NAV_ITEM_TYPE_ITEM,
+        key: 'taskItems',
+        path: '',
+        title: 'Управление заданиями',
+        translateKey: 'nav.tasks.menu',
+        icon: 'collapseMenu',
+        type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [],
-        subMenu: [],
+        subMenu: [
+            {
+                key: 'createTaskItem',
+                path: '/create-task',
+                title: 'Cоздать задание',
+                translateKey: 'nav.createTask',
+                icon: 'groupSingleMenu',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'viewTaskItem',
+                path: '/view-task',
+                title: 'Просмотреть задание',
+                translateKey: 'nav.createTask',
+                icon: 'groupSingleMenu',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+        ],
     },
     /** Example purpose only, please remove */
     // {

@@ -15,7 +15,13 @@ export const protectedRoutes: Routes = [
     {
         key: 'createTaskItem',
         path: '/create-task',
-        component: lazy(() => import('@/views/tasks/CreateTask')),
+        component: lazy(() => import('@/views/tasks/TaskCreate')),
+        authority: [],
+    },
+    {
+        key: 'viewTaskItem',
+        path: '/view-task/:taskLabel',
+        component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],
     },
     /** Example purpose only, please remove */

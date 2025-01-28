@@ -1,6 +1,5 @@
 import React from "react";
 import { Controller, useFieldArray } from 'react-hook-form'
-import NestedArray from "./NestedAnwsers";
 import { Button, FormItem, Input } from '@/components/ui'
 import { HiMinus } from 'react-icons/hi'
 
@@ -14,20 +13,38 @@ export default function FormQuestions({ control, errors, register }) {
             <div className="mt-5">
                 {fields.map((item, index) => {
                     return (
-                        <div className="mt-5 mb-5" key={item.id}>
+                        <div key={item.id} className="mt-5 mb-5">
                             <FormItem
-                                label="Вопрос"
-                                invalid={Boolean(errors.customQuestions?.[index]?.name?.message)}
-                                errorMessage={errors.customQuestions?.[index]?.name?.message}
+                                label="Поле"
+                                invalid={Boolean(errors.customQuestions?.[index]?.label)}
+                                errorMessage={errors.customQuestions?.[index]?.label?.message}
                             >
                                 <Controller
-                                    name={`customQuestions.${index}.name`}
+                                    name={`customQuestions.${index}.label`}
                                     control={control}
                                     render={({ field }) =>
                                         <Input
                                             type="text"
                                             autoComplete="off"
                                             placeholder="Введите вопрос"
+                                            {...field}
+                                        />
+                                    }
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="Описание"
+                                invalid={Boolean(errors.customQuestions?.[index]?.description)}
+                                errorMessage={errors.customQuestions?.[index]?.description?.message}
+                            >
+                                <Controller
+                                    name={`customQuestions.${index}.description`}
+                                    control={control}
+                                    render={({ field }) =>
+                                        <Input
+                                            type="text"
+                                            autoComplete="off"
+                                            placeholder="Введите описание"
                                             {...field}
                                         />
                                     }
@@ -40,7 +57,7 @@ export default function FormQuestions({ control, errors, register }) {
                                 icon={<HiMinus />}
                                 onClick={() =>remove(index)}
                             />
-                            <NestedArray nestIndex={index} {...{ control, register }}/>
+                            {/*<NestedArray nestIndex={index} {...{ control, register, errors }} />*/}
                         </div>
                     );
                 })}
