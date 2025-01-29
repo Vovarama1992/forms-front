@@ -26,7 +26,7 @@ export async function apiTaskImageSave(data: FormData, id: string, optionId: str
 
 export async function getTaskByLabel(label: string): Promise<ITaskCreateResponse> {
     return ApiService.fetchDataWithAxios({
-        url: `${endpointConfig.tasks.getByLabel}/${label}`,
+        url: `${endpointConfig.tasks.getByLabel}/${decodeURI(label)}`,
         method: 'get',
     })
 }

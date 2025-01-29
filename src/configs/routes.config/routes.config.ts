@@ -14,7 +14,7 @@ export const protectedRoutes: Routes = [
     },
     {
         key: 'viewTaskItem',
-        path: '/view-task/:taskId',
+        path: '/view-task/:label',
         component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],
     },

@@ -52,7 +52,7 @@ const TaskCreateView = () => {
                         existOption?.image.forEach(imageInner => {
                             formData.append('file', imageInner)
                         })
-                        apiTaskImageSave(formData, taskId.toString(), option.label).catch(e => {
+                        apiTaskImageSave(formData, taskId.toString(), option.id.toString()).catch(e => {
                             toast.error(e.response.data.message);
                         });
                     }

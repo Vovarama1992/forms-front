@@ -1,7 +1,7 @@
 import Card from '@/components/ui/Card'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router';
-import { getTaskById, getTaskOptionsImage } from '@/services/TaskApiService'
+import { getTaskById, getTaskByLabel, getTaskOptionsImage } from '@/services/TaskApiService'
 import { FormItem, Radio, Input, Button, Checkbox, Form } from '@/components/ui'
 import { ToastContainer, toast } from 'react-toastify';
 import { Controller, useForm } from 'react-hook-form'
@@ -14,7 +14,7 @@ const TaskView = () => {
 
     const [task, setTask] = useState<ITaskCreateResponse>()
     // const [images, setImages] = useState<Record<string, any>>(null)
-    const paramas = useParams<{taskId: string}>();
+    const paramas = useParams<{label: string}>();
 
     type FormSchema = {
         inputs: {
@@ -24,7 +24,7 @@ const TaskView = () => {
     }
 
     const validationSchema: ZodType<FormSchema> = z.object({
-        option: z.string().min(1, 'Выберите значение'),
+        option: z.number({message: 'Выберите значение'}),
         inputs: z.array(z.object({
             key: z.string(),
         })),
@@ -43,9 +43,10 @@ const TaskView = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (paramas.taskId) {
+            if (paramas.label) {
+                console.log(decodeURIComponent(paramas.label));
                 try {
-                    const task = await getTaskById(+paramas.taskId);
+                    const task = await getTaskByLabel(decodeURIComponent(paramas.label));
                     console.log(task);
 
                     if (task.id) {
@@ -98,11 +99,11 @@ const TaskView = () => {
                                 asterisk
                                 label="Выбирите вариант"
                                 className="mb-0"
-                                invalid={Boolean(errors.optionId)}
-                                errorMessage={errors.optionId?.message}
+                                invalid={Boolean(errors.option)}
+                                errorMessage={errors.option?.message}
                             >
                                 <Controller
-                                    name="optionId"
+                                    name="option"
                                     control={control}
                                     render={({ field }) =>
                                         <Radio.Group vertical {...field}>
@@ -130,6 +131,9 @@ const TaskView = () => {
                                             label={input.label}
                                         >
                                             <Input
+                                                onChange={(event => {
+
+                                                })}
                                                 type="text"
                                                 name="fieldA"
                                                 placeholder="Введите ваш ответ"
