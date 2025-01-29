@@ -29,7 +29,7 @@ export default function FormQuestions({ control, errors, register }) {
                                             <Input
                                                 type="text"
                                                 autoComplete="off"
-                                                placeholder="Введите вопрос"
+                                                placeholder="Введите название"
                                                 {...field}
                                             />
                                         }
@@ -134,7 +134,7 @@ export default function FormQuestions({ control, errors, register }) {
                         append({ value: "" });
                     }}
                 >
-                    Добавить вопрос
+                    Добавить опцию
                 </Button>
             </div>
     );
