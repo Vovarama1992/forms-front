@@ -7,16 +7,6 @@ import type { NavigationTree } from '@/@types/navigation'
 
 const navigationConfig: NavigationTree[] = [
     {
-        key: 'home',
-        path: '/home',
-        title: 'Home',
-        translateKey: 'nav.home',
-        icon: 'home',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
-    {
         key: 'taskItems',
         path: '',
         title: 'Управление заданиями',

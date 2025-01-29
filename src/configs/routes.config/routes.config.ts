@@ -7,12 +7,6 @@ export const publicRoutes: Routes = [...authRoute]
 
 export const protectedRoutes: Routes = [
     {
-        key: 'home',
-        path: '/home',
-        component: lazy(() => import('@/views/Home')),
-        authority: [],
-    },
-    {
         key: 'createTaskItem',
         path: '/create-task',
         component: lazy(() => import('@/views/tasks/TaskCreate')),
@@ -20,7 +14,7 @@ export const protectedRoutes: Routes = [
     },
     {
         key: 'viewTaskItem',
-        path: '/view-task/:taskLabel',
+        path: '/view-task/:taskId',
         component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],
     },

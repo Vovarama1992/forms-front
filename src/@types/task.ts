@@ -2,7 +2,8 @@ export interface ITaskCreateRequest {
     label: string
     description?: string
     options: TaskOption[]
-    inputs: Input[]
+    inputs: Input[] | string[]
+    visible: string
 }
 
 export interface ITaskCreateResponse {
@@ -42,3 +43,14 @@ interface Input {
     taskId: number
 }
 
+export type TaskType = ITaskCreateResponse
+
+
+export interface ITaskVoteRequest {
+    optionId: number;
+    reason: string;
+    inputs: {
+        [key: string]: string;
+    };
+    userId: number;
+}

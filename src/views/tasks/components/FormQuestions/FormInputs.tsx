@@ -13,12 +13,13 @@ const FormInputs = ({ control, errors, register}) => {
 
     return (
             <div>
-                <div className="mb-10">
-                    <h5 className="mb-4">Дополнительные вопросы</h5>
+                <div className="mb-5">
+                    <h5 className="mb-2">Дополнительные вопросы</h5>
                 </div>
                 {fields.map((field, index) => (
                     <div key={index}>
                         <FormItem
+                            layout="vertical"
                             label="Вопрос"
                         >
                             <Controller
@@ -37,9 +38,10 @@ const FormInputs = ({ control, errors, register}) => {
                             type="button"
                             shape="circle"
                             size="sm"
+                            className="mb-5"
                             icon={<HiMinus />}
                             onClick={() =>remove(index)}
-                        />
+                        > Удалить </Button>
                     </div>
                 ))}
                 <div className="flex items-center gap-2">

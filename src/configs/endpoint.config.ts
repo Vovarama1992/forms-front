@@ -7,6 +7,7 @@ const endpointConfig = {
     resetPassword: '/reset-password',
     tasks: {
         create: '/tasks',
+        vote: '/tasks/:taskId/vote',
         saveImage: '/images/upload-option-image/',
         getById: '/tasks/by-id',
         getByLabel: '/tasks/by-label',

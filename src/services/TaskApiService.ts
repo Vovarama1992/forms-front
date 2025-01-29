@@ -12,9 +12,9 @@ export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCrea
     })
 }
 
-export async function apiTaskImageSave(data: any, id: string, label: string): Promise<ITaskCreateResponse> {
+export async function apiTaskImageSave(data: FormData, id: string, optionId: string): Promise<ITaskCreateResponse> {
     return ApiService.fetchDataWithAxios({
-        url: `${endpointConfig.tasks.saveImage}${id}/${label}`,
+        url: `${endpointConfig.tasks.saveImage}${id}/${optionId}`,
         method: 'post',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -31,9 +31,16 @@ export async function getTaskByLabel(label: string): Promise<ITaskCreateResponse
     })
 }
 
-export async function getTaskImagesByLabel(taskId: string, label: string): Promise<ITaskCreateResponse> {
+export async function getTaskById(id: number): Promise<ITaskCreateResponse> {
     return ApiService.fetchDataWithAxios({
-        url: `${endpointConfig.tasks.getImages}/${taskId}/${label}`,
+        url: `${endpointConfig.tasks.getById}/${id}`,
+        method: 'get',
+    })
+}
+
+export async function getTaskOptionsImage(taskId: string, optionId: string, optionLabel: string): Promise<ITaskCreateResponse> {
+    return ApiService.fetchDataWithAxios({
+        url: `${endpointConfig.tasks.getImages}/${taskId}/${optionId}`,
         method: 'get',
         headers: {
             'Content-Type': 'multipart/form-data',

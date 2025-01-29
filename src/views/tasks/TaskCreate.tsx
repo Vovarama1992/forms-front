@@ -1,17 +1,17 @@
 import { FormItem, Form } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import { HiMinus } from 'react-icons/hi'
-import { useForm, useFieldArray, Controller } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Card } from '@/components/ui/Card'
-import { Upload } from '@/components/ui'
 import { RichTextEditor } from '@/components/shared'
 import FormQuestions from '@/views/tasks/components/FormQuestions/FormQuestions'
 import FormInputs from '@/views/tasks/components/FormQuestions/FormInputs'
 import { apiTaskCreate, apiTaskImageSave } from '@/services/TaskApiService'
 import { FormSchema } from '@/views/tasks/types/types'
 import { defaultValues, validationSchema } from '@/views/tasks/consts'
+import { ToastContainer, toast } from 'react-toastify';
+import { Radio } from '@/components/ui'
 
 
 const TaskCreateView = () => {
@@ -30,44 +30,42 @@ const TaskCreateView = () => {
     })
 
     const onSubmit = async (values: FormSchema) => {
-        console.log(values)
         try {
             const result = await apiTaskCreate({
                 description: values.description,
                 label: values.label,
                 options: [
                     ...values.customQuestions,
-                ] as [],
+                ],
                 inputs: [
                     ...values.inputs.flatMap(obj => Object.values(obj)),
-                ] as [],
+                ],
+                visible: values.visible,
             });
-            if (result.id) {
-                const { id, label } = result;
-                values.images.forEach(image => {
-                    console.log(image)
-                    const formData = new FormData()
-                    image.image?.forEach(imageInner => {
-                        formData.append('file', imageInner)
-                    })
-                    apiTaskImageSave(formData, id.toString(), label).then(result => {
-                        console.log(result);
-                    }).catch(e => {
-                        console.log(e);
-                    });
+            const { id:taskId } = result;
+            if (taskId) {
+                result.options.forEach(option => {
+                    const { label } = option;
+                    const existOption = values.customQuestions.find(el => el.label === label);
+                    if (existOption?.image) {
+                        const formData = new FormData()
+                        existOption?.image.forEach(imageInner => {
+                            formData.append('file', imageInner)
+                        })
+                        apiTaskImageSave(formData, taskId.toString(), option.label).catch(e => {
+                            toast.error(e.response.data.message);
+                        });
+                    }
                 })
             }
+            toast.success('Задание успешно создано')
             reset({ ...defaultValues })
             console.log(result);
         } catch (e) {
-            console.error(e)
+            console.log(e);
+            toast.error("Произошла ошибка")
         }
     }
-
-    const { fields, append, remove } = useFieldArray({
-        name: 'images',
-        control
-    })
 
     return (
         <>
@@ -116,105 +114,30 @@ const TaskCreateView = () => {
                                     )}
                                 />
                             </FormItem>
-                        </Card>
-                    </div>
-                    <div className="">
-                        <Card>
-                            <div>
-                                <h5 className="mb-4">Изображения</h5>
-                                {fields.map((userField, index) => (
-                                    <div key={userField.id}>
-                                        <FormItem
-                                            asterisk
-                                            label="Изображение"
-                                            invalid={Boolean(
-                                                errors.images?.[index]?.image
-                                                    ?.message,
-                                            )}
-                                            errorMessage={
-                                                errors.images?.[index]?.image
-                                                    ?.message
-                                            }
-                                        >
-                                            <Controller
-                                                name={`images.${index}.image`}
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Upload
-                                                        fileList={field.value}
-                                                        onFileRemove={(files) =>
-                                                            field.onChange(
-                                                                files,
-                                                            )
-                                                        }
-                                                        onChange={(files) =>
-                                                            field.onChange(
-                                                                files,
-                                                            )
-                                                        }
-                                                    >
-                                                        <Button>
-                                                            {' '}
-                                                            Выбрать изображение{' '}
-                                                        </Button>
-                                                    </Upload>
-                                                )}
-                                            />
-                                        </FormItem>
-                                        <Button
-                                            type="button"
-                                            shape="circle"
-                                            size="sm"
-                                            icon={<HiMinus />}
-                                            onClick={() => remove(index)}
-                                        />
-                                        <FormItem
-                                            layout="vertical"
-                                            label="Описание"
-                                            invalid={Boolean(
-                                                errors.images?.[index]
-                                                    ?.imageDescription?.message,
-                                            )}
-                                            errorMessage={
-                                                errors.images?.[index]
-                                                    ?.imageDescription?.message
-                                            }
-                                        >
-                                            <Controller
-                                                name={`images.${index}.imageDescription`}
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Input
-                                                        type="text"
-                                                        autoComplete="off"
-                                                        placeholder="Введите описание"
-                                                        {...field}
-                                                    />
-                                                )}
-                                            />
-                                        </FormItem>
-                                    </div>
-                                ))}
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        type="button"
-                                        className="ltr:mr-2 rtl:ml-2"
-                                        onClick={() => {
-                                            append({
-                                                imageDescription: '',
-                                                image: undefined,
-                                            })
-                                        }}
-                                    >
-                                        Добавить поле
-                                    </Button>
-                                </div>
-                            </div>
+                            <FormItem
+                                asterisk
+                                className="mb-0 mt-5"
+                                layout="vertical"
+                                label="Тип задания"
+                                invalid={Boolean(errors.visible)}
+                                errorMessage={errors.visible?.message}
+                            >
+                                <Controller
+                                    name="visible"
+                                    control={control}
+                                    render={({ field }) =>
+                                        <Radio.Group {...field}>
+                                            <Radio value={'PUBLIC'}>Публичный</Radio>
+                                            <Radio value={'PRIVATE'}>Приватный</Radio>
+                                        </Radio.Group>
+                                    }
+                                />
+                            </FormItem>
                         </Card>
                     </div>
                     <div>
                         <Card>
-                            <h5 className="mb-4">Дополнительные поля</h5>
+                            <h5 className="mb-4">Опции</h5>
                             <FormQuestions
                                 {...{
                                     errors,
@@ -246,6 +169,7 @@ const TaskCreateView = () => {
                     </div>
                 </div>
             </Form>
+            <ToastContainer/>
         </>
     )
 }

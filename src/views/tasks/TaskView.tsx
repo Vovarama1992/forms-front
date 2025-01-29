@@ -1,84 +1,152 @@
 import Card from '@/components/ui/Card'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router';
-import { getTaskByLabel, getTaskImagesByLabel } from '@/services/TaskApiService'
-import { FormItem, Radio, Input } from '@/components/ui'
+import { getTaskById, getTaskOptionsImage } from '@/services/TaskApiService'
+import { FormItem, Radio, Input, Button, Checkbox, Form } from '@/components/ui'
+import { ToastContainer, toast } from 'react-toastify';
+import { Controller, useForm } from 'react-hook-form'
 import parse from 'html-react-parser'
+import { z, ZodType } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import type { ITaskCreateResponse } from '@/@types/task'
 
 const TaskView = () => {
 
-    const [task, setTask] = useState<Record<string, any> | null>(null)
+    const [task, setTask] = useState<ITaskCreateResponse>()
     // const [images, setImages] = useState<Record<string, any>>(null)
-    const [optionSelected, setOption] = useState(null)
-    const paramas = useParams<{taskLabel: string}>();
+    const paramas = useParams<{taskId: string}>();
+
+    type FormSchema = {
+        inputs: {
+            [key: string]: string,
+        }[],
+        option: string,
+    }
+
+    const validationSchema: ZodType<FormSchema> = z.object({
+        option: z.string().min(1, 'Выберите значение'),
+        inputs: z.array(z.object({
+            key: z.string(),
+        })),
+    })
+
+    const {
+        handleSubmit,
+        formState: { errors },
+        control
+    } = useForm<FormSchema>({
+        defaultValues: {
+            inputs: [],
+        },
+        resolver: zodResolver(validationSchema),
+    });
 
     useEffect(() => {
-        if (paramas.taskLabel) {
-            try {
-                getTaskByLabel(paramas?.taskLabel).then((task) => {
+        const fetchData = async () => {
+            if (paramas.taskId) {
+                try {
+                    const task = await getTaskById(+paramas.taskId);
                     console.log(task);
+
                     if (task.id) {
-                        setTask(task);
+                        setTask(task); // Обновляем состояние задачи
                     }
-                    return task;
-                }).then(task => {
-                    return getTaskImagesByLabel(task.id.toString(), task.label);
-                }).then(images => {
-                    console.log(images);
+
+                    const taskImages = task.options.map(async (option) => {
+                        const image = await getTaskOptionsImage(task.id.toString(), option.id.toString(), option.label);
+                        console.log(image);
+                    })
+
+                    // Получаем изображения для задачи
+                    console.log(taskImages);
+
+                    // Обновляем состояние изображений (если нужно)
                     // setImages(images);
-                });
-            } catch (e) {
-                console.log(e);
+                } catch (e) {
+                    console.error("Ошибка при получении данных:", e);
+                }
             }
-        }
-    }, [paramas.taskLabel]);
+        };
+        fetchData().catch(e => {
+            console.error(e);
+            toast.error('Ошибка получения задачи')
+        }); // Вызываем асинхронную функцию
+    }, [paramas.taskId]);
+
+    const onSubmit = (values: FormSchema) => {
+        window.alert(JSON.stringify(values))
+    }
 
     return (
         <>
-            <h3 className="h3 mb-5">Просмотр задания</h3>
+            <h3 className="h3 mb-5">Задание</h3>
             {task && (
                 <>
-                    <Card>
-                        <h4>{task.label}</h4>
-                        <div className="mt-2">
-                            {parse(task.description)}
-                        </div>
+                    <div className="w-3/4">
+                    <Card
+                        header={{
+                            content: task?.label,
+                        }}
+                    >
+                        <div className="mt-2">{parse(task.description)}</div>
                     </Card>
-                    <Card className="mt-5">
-                        <h4>
-                            Изображения
-                        </h4>
-                    </Card>
-                    <Card className="mt-5">
-                        <h4>Выберите ответ</h4>
-                        <div className="mt-5">
-                            <Radio.Group
-                                vertical
-                                value={optionSelected}
-                                onChange={setOption}
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Card className="mt-5" header={{
+                            content: 'Опции'
+                        }}>
+                            <FormItem
+                                asterisk
+                                label="Выбирите вариант"
+                                className="mb-0"
+                                invalid={Boolean(errors.optionId)}
+                                errorMessage={errors.optionId?.message}
                             >
-                                {task?.options.map((option) => {
-                                    return <Radio value={option.id} key={option.id}> { option.label } </Radio>
-                                })}
-                            </Radio.Group>
-                        </div>
-                    </Card>
-                    { task.inputs.length > 0 && (
-                        <Card className="mt-5">
-                            <h4>Дополнительные вопросы</h4>
-                            {
-                                task.inputs.map(input => {
+                                <Controller
+                                    name="optionId"
+                                    control={control}
+                                    render={({ field }) =>
+                                        <Radio.Group vertical {...field}>
+                                            {
+                                                task?.options.map(el => {
+                                                    return (
+                                                        <Radio key={el.id} value={el.id}>{el.label}</Radio>
+                                                    )
+                                                })
+                                            }
+                                        </Radio.Group>
+                                    }
+                                />
+                            </FormItem>
+                        </Card>
+                        {task.inputs.length > 0 && (
+                            <Card className="mt-5" header={{
+                                content: 'Дополнительные вопросы'
+                            }}>
+                                {task.inputs.map((input) => {
                                     return (
-                                        <FormItem key={input.id} className="mt-4" label={input.label}>
-                                            <Input type="text" name="fieldA" placeholder="Введите ваш ответ" />
+                                        <FormItem
+                                            key={input.id}
+                                            className="mb-4"
+                                            label={input.label}
+                                        >
+                                            <Input
+                                                type="text"
+                                                name="fieldA"
+                                                placeholder="Введите ваш ответ"
+                                            />
                                         </FormItem>
                                     )
-                                })
-                            }
-                        </Card>
-                    ) }
+                                })}
+                            </Card>
+                        )}
+                        <Button className="mt-5" type="submit">
+                            Отправить
+                        </Button>
+                    </Form>
+                    </div>
                 </>
             )}
+            <ToastContainer />
         </>
     )
 }
