@@ -1,7 +1,7 @@
 import Card from '@/components/ui/Card'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router';
-import { getTaskById, getTaskByLabel, getTaskOptionsImage } from '@/services/TaskApiService'
+import { fetchTaskVote, getTaskById, getTaskByLabel, getTaskOptionsImage } from '@/services/TaskApiService'
 import { FormItem, Radio, Input, Button, Checkbox, Form } from '@/components/ui'
 import { ToastContainer, toast } from 'react-toastify';
 import { Controller, useForm } from 'react-hook-form'
@@ -13,53 +13,43 @@ import type { ITaskCreateResponse } from '@/@types/task'
 const TaskView = () => {
 
     const [task, setTask] = useState<ITaskCreateResponse>()
-    // const [images, setImages] = useState<Record<string, any>>(null)
-    const paramas = useParams<{label: string}>();
+    const params = useParams<{label: string}>();
 
     type FormSchema = {
         inputs: {
             [key: string]: string,
-        }[],
-        option: string,
+        },
+        option: number,
     }
 
     const validationSchema: ZodType<FormSchema> = z.object({
         option: z.number({message: 'Выберите значение'}),
-        inputs: z.array(z.object({
-            key: z.string(),
-        })),
+        inputs: z.record(z.string({message: 'Введите ответ'})),
     })
 
     const {
         handleSubmit,
         formState: { errors },
-        control
+        control,
+        reset,
     } = useForm<FormSchema>({
         defaultValues: {
-            inputs: [],
+            inputs: {},
         },
         resolver: zodResolver(validationSchema),
     });
 
     useEffect(() => {
         const fetchData = async () => {
-            if (paramas.label) {
-                console.log(decodeURIComponent(paramas.label));
+            if (params.label) {
+                console.log(decodeURIComponent(params.label));
                 try {
-                    const task = await getTaskByLabel(decodeURIComponent(paramas.label));
+                    const task = await getTaskByLabel(decodeURIComponent(params.label));
                     console.log(task);
 
                     if (task.id) {
                         setTask(task); // Обновляем состояние задачи
                     }
-
-                    const taskImages = task.options.map(async (option) => {
-                        const image = await getTaskOptionsImage(task.id.toString(), option.id.toString(), option.label);
-                        console.log(image);
-                    })
-
-                    // Получаем изображения для задачи
-                    console.log(taskImages);
 
                     // Обновляем состояние изображений (если нужно)
                     // setImages(images);
@@ -72,10 +62,27 @@ const TaskView = () => {
             console.error(e);
             toast.error('Ошибка получения задачи')
         }); // Вызываем асинхронную функцию
-    }, [paramas.taskId]);
+    }, [params.label]);
 
-    const onSubmit = (values: FormSchema) => {
-        window.alert(JSON.stringify(values))
+    const onSubmit = async (values: FormSchema) => {
+
+       const selectedOption = task?.options.find(option => option.id === values.option)
+        try {
+           if (selectedOption) {
+               await fetchTaskVote({
+                   reason: selectedOption?.label,
+                   optionId: selectedOption?.id,
+                   inputs: values.inputs,
+               }, task?.id.toString())
+               reset({
+                   inputs: {},
+               })
+               toast.success('Данные успешно отправлены');
+           }
+        } catch (error) {
+           console.error(error)
+            toast.error('Ошибка выполнения запроса');
+        }
     }
 
     return (
@@ -110,7 +117,16 @@ const TaskView = () => {
                                             {
                                                 task?.options.map(el => {
                                                     return (
-                                                        <Radio key={el.id} value={el.id}>{el.label}</Radio>
+                                                        <Card key={el.id} header={{
+                                                            content: el.label,
+                                                        }}>
+                                                            <p className="mb-4">
+                                                                {el.description}
+                                                            </p>
+                                                            <Radio key={el.id} value={el.id}>
+                                                                <img src={el.imageUrl} alt="" />
+                                                            </Radio>
+                                                        </Card>
                                                     )
                                                 })
                                             }
@@ -126,18 +142,24 @@ const TaskView = () => {
                                 {task.inputs.map((input) => {
                                     return (
                                         <FormItem
-                                            key={input.id}
-                                            className="mb-4"
                                             label={input.label}
+                                            invalid={Boolean(errors.inputs?.[input.id])}
+                                            errorMessage={errors.inputs?.[input.id]?.message}
                                         >
-                                            <Input
-                                                onChange={(event => {
-
-                                                })}
-                                                type="text"
-                                                name="fieldA"
-                                                placeholder="Введите ваш ответ"
-                                            />
+                                            <Controller
+                                                key={input.id}
+                                                name={`inputs.${input.id.toString()}`}
+                                                control={control}
+                                                render={({ field }) =>
+                                                {
+                                                    return (
+                                                            <Input
+                                                                {...field}
+                                                                type="text"
+                                                                placeholder="Введите ваш ответ"
+                                                            />
+                                                )}}
+                                             />
                                         </FormItem>
                                     )
                                 })}

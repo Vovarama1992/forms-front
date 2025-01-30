@@ -19,6 +19,7 @@ export interface ITaskCreateResponse {
 }
 
 export interface ITaskOptionResponse {
+    imageUrl?: string
     id: number
     taskId: number
     label: string
@@ -52,5 +53,6 @@ export interface ITaskVoteRequest {
     inputs: {
         [key: string]: string;
     };
-    userId: number;
+    userId?: number;
 }
+

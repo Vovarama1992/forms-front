@@ -22,7 +22,6 @@ const TaskCreateView = () => {
         register,
         getValues,
         setValue,
-        reset,
         formState: { errors },
     } = useForm({
         defaultValues,
@@ -59,7 +58,7 @@ const TaskCreateView = () => {
                 })
             }
             toast.success('Задание успешно создано')
-            reset({ ...defaultValues })
+            // reset({ ...defaultValues })
             console.log(result);
         } catch (e) {
             console.log(e);

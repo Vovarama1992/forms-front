@@ -1,6 +1,6 @@
 import ApiService from '@/services/ApiService'
 import endpointConfig from '@/configs/endpoint.config'
-import { ITaskCreateRequest, ITaskCreateResponse } from '@/@types/task'
+import { ITaskCreateRequest, ITaskCreateResponse, ITaskVoteRequest } from '@/@types/task'
 
 export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCreateResponse> {
     return ApiService.fetchDataWithAxios({
@@ -44,6 +44,19 @@ export async function getTaskOptionsImage(taskId: string, optionId: string, opti
         method: 'get',
         headers: {
             'Content-Type': 'multipart/form-data',
+        },
+    })
+}
+
+export async function fetchTaskVote(
+    selectedTaskValues: ITaskVoteRequest,
+    taskId: string | undefined,
+): Promise<ITaskCreateResponse> {
+    return ApiService.fetchDataWithAxios({
+        url: `${endpointConfig.tasks.vote}/${taskId}/vote`,
+        method: 'post',
+        data: {
+            ...selectedTaskValues,
         },
     })
 }

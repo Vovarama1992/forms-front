@@ -25,16 +25,6 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
-            {
-                key: 'viewTaskItem',
-                path: '/view-task',
-                title: 'Просмотреть задание',
-                translateKey: 'nav.createTask',
-                icon: 'groupSingleMenu',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
-                subMenu: [],
-            },
         ],
     },
     /** Example purpose only, please remove */
