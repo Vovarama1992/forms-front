@@ -20,11 +20,13 @@ const TaskView = () => {
             [key: string]: string,
         },
         option: number,
+        reason: string,
     }
 
     const validationSchema: ZodType<FormSchema> = z.object({
         option: z.number({message: 'Выберите значение'}),
         inputs: z.record(z.string({message: 'Введите ответ'})),
+        reason: z.string({ message: 'Заполните поле' }),
     })
 
     const {
@@ -66,19 +68,16 @@ const TaskView = () => {
 
     const onSubmit = async (values: FormSchema) => {
 
-       const selectedOption = task?.options.find(option => option.id === values.option)
         try {
-           if (selectedOption) {
-               await fetchTaskVote({
-                   reason: selectedOption?.label,
-                   optionId: selectedOption?.id,
-                   inputs: values.inputs,
-               }, task?.id.toString())
-               reset({
-                   inputs: {},
-               })
-               toast.success('Данные успешно отправлены');
-           }
+           await fetchTaskVote({
+               reason: values?.reason,
+               optionId: values?.option,
+               inputs: values.inputs,
+           }, task?.id.toString())
+           reset({
+               inputs: {},
+           })
+           toast.success('Данные успешно отправлены');
         } catch (error) {
            console.error(error)
             toast.error('Ошибка выполнения запроса');
@@ -117,20 +116,38 @@ const TaskView = () => {
                                             {
                                                 task?.options.map(el => {
                                                     return (
+                                                        <Radio key={el.id} value={el.id}>
                                                         <Card key={el.id} header={{
                                                             content: el.label,
                                                         }}>
                                                             <p className="mb-4">
                                                                 {el.description}
                                                             </p>
-                                                            <Radio key={el.id} value={el.id}>
                                                                 <img className="task-vote-img" src={el.imageUrl} alt="" />
-                                                            </Radio>
                                                         </Card>
+                                                        </Radio>
                                                     )
                                                 })
                                             }
                                         </Radio.Group>
+                                    }
+                                />
+                            </FormItem>
+                            <FormItem
+                                className="mt-7 mb-1"
+                                label="Причина выбора опции"
+                                invalid={Boolean(errors.reason)}
+                                errorMessage={errors.reason?.message}
+                            >
+                                <Controller
+                                    name="reason"
+                                    control={control}
+                                    render={({ field }) =>
+                                        <Input
+                                            type="text"
+                                            placeholder="Напишите причину выбора"
+                                            {...field}
+                                        />
                                     }
                                 />
                             </FormItem>

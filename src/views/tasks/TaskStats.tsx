@@ -53,7 +53,7 @@ const TaskStatsView = () => {
                                     content: 'Статистика опций'
                                 }
                             }>
-                                <div class="flex gap-5 flex-wrap">
+                                <div className="flex gap-5 flex-wrap">
                                     {task?.optionsStatistics.map((option, i) => {
                                         return (
                                             <Card
@@ -64,7 +64,7 @@ const TaskStatsView = () => {
                                                 }}
                                             >
                                                 <img
-                                                    className="task-vote-img"
+                                                    className="task-vote-img max-w-full"
                                                     src={option.imageUrl}
                                                     alt=""
                                                 />
@@ -74,7 +74,7 @@ const TaskStatsView = () => {
                                                 </p>
                                                 {option?.reasons.length > 0 && (
                                                     <>
-                                                        <h5>Причины: </h5>
+                                                        <h5>Причины выбора опции: </h5>
                                                         <ul>
                                                             {option.reasons.map(
                                                                 (
