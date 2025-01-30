@@ -1,6 +1,6 @@
 import ApiService from '@/services/ApiService'
 import endpointConfig from '@/configs/endpoint.config'
-import { ITaskCreateRequest, ITaskCreateResponse, ITaskVoteRequest } from '@/@types/task'
+import { IResponseStatistic, ITaskCreateRequest, ITaskCreateResponse, ITaskVoteRequest } from '@/@types/task'
 
 export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCreateResponse> {
     return ApiService.fetchDataWithAxios({
@@ -58,5 +58,14 @@ export async function fetchTaskVote(
         data: {
             ...selectedTaskValues,
         },
+    })
+}
+
+export async function fetchTaskStatistics(
+    label: string,
+): Promise<IResponseStatistic> {
+    return ApiService.fetchDataWithAxios({
+        url: `${endpointConfig.tasks.statistics}/${label}`,
+        method: 'get',
     })
 }

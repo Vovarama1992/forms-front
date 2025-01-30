@@ -18,6 +18,12 @@ export const protectedRoutes: Routes = [
         component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],
     },
+    {
+        key: 'viewTaskStats',
+        path: '/view-task-statistics/:label',
+        component: lazy(() => import('@/views/tasks/TaskStats')),
+        authority: [],
+    },
     /** Example purpose only, please remove */
     {
         key: 'singleMenuItem',

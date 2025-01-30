@@ -56,3 +56,21 @@ export interface ITaskVoteRequest {
     userId?: number;
 }
 
+export interface OptionsStatistic {
+    optionLabel: string
+    votesCount: number
+    reasons: string[]
+    imageUrl: string
+}
+
+export interface TaskDetails {
+    label: string
+    description: string
+    openCount: number
+}
+
+export interface IResponseStatistic {
+    optionsStatistics: OptionsStatistic[]
+    taskDetails: TaskDetails
+    totalVotes: number
+}

@@ -124,7 +124,7 @@ const TaskView = () => {
                                                                 {el.description}
                                                             </p>
                                                             <Radio key={el.id} value={el.id}>
-                                                                <img src={el.imageUrl} alt="" />
+                                                                <img className="task-vote-img" src={el.imageUrl} alt="" />
                                                             </Radio>
                                                         </Card>
                                                     )

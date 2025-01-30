@@ -12,6 +12,7 @@ const endpointConfig = {
         getById: '/tasks/by-id',
         getByLabel: '/tasks/by-label',
         getImages: '/images/option-image',
+        statistics: '/tasks/statistics',
     }
 }
 
