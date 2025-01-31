@@ -16,6 +16,7 @@ export interface ITaskCreateResponse {
     updatedAt: string
     options: ITaskOptionResponse[]
     inputs: ITaskInputResponse[]
+    visible: 'PUBLIC' | 'PRIVATE'
 }
 
 export interface ITaskOptionResponse {
@@ -71,6 +72,10 @@ export interface TaskDetails {
 
 export interface IResponseStatistic {
     optionsStatistics: OptionsStatistic[]
+    inputsStatistics: {
+        inputLabel: string
+        answers: string[]
+    }[]
     taskDetails: TaskDetails
     totalVotes: number
 }

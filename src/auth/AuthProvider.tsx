@@ -2,7 +2,7 @@ import { useRef, useImperativeHandle } from 'react'
 import AuthContext from './AuthContext'
 import appConfig from '@/configs/app.config'
 import { useSessionUser, useToken } from '@/store/authStore'
-import { apiSignIn, apiSignOut, apiSignUp } from '@/services/AuthService'
+import { apiSignIn, apiSignOut, apiSignUp, getUserMe } from '@/services/AuthService'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useNavigate } from 'react-router-dom'
 import type {
@@ -14,6 +14,7 @@ import type {
 } from '@/@types/auth'
 import type { ReactNode, Ref } from 'react'
 import type { NavigateFunction } from 'react-router-dom'
+import useAuth from '@/utils/hooks/useAuth'
 
 type AuthProviderProps = { children: ReactNode }
 
@@ -34,6 +35,7 @@ const IsolatedNavigator = ({ ref }: { ref: Ref<IsolatedNavigatorRef> }) => {
 }
 
 function AuthProvider({ children }: AuthProviderProps) {
+
     const signedIn = useSessionUser((state) => state.session.signedIn)
     const user = useSessionUser((state) => state.user)
     const setUser = useSessionUser((state) => state.setUser)
@@ -87,6 +89,10 @@ function AuthProvider({ children }: AuthProviderProps) {
             const resp = await apiSignIn(values)
             if (resp) {
                 handleSignIn({ access_token: resp.access_token })
+                const user = await getUserMe();
+                setUser({
+                    ...user
+                })
                 redirect()
                 return {
                     status: 'success',
@@ -110,6 +116,10 @@ function AuthProvider({ children }: AuthProviderProps) {
         try {
             const resp = await apiSignUp(values)
             if (resp) {
+                const user = await getUserMe();
+                setUser({
+                    ...user,
+                })
                 redirectToSignIn()
                 return {
                     status: 'success',

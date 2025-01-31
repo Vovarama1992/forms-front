@@ -6,11 +6,14 @@ import { fetchTaskStatistics } from '@/services/TaskApiService'
 import { toast, ToastContainer } from 'react-toastify'
 import { IResponseStatistic } from '@/@types/task'
 import parse from 'html-react-parser'
+import Accordion from '@/components/shared/Accordion/Accordion'
+import { useSessionUser } from '@/store/authStore'
 
 const TaskStatsView = () => {
 
     const [task, setTask] = useState<IResponseStatistic | null>(null);
     const params = useParams<{label: string}>();
+    const user = useSessionUser((state) => state.user)
 
     useEffect(() => {
 
@@ -47,13 +50,13 @@ const TaskStatsView = () => {
                             }
                             <p>Количество открытий: <b> { task?.taskDetails.openCount } </b> </p>
                         </Card>
-                        <div className="flex">
-                            <Card className="mt-5" header={
+                        <div className="flex w-full">
+                            <Card className="mt-5 w-full" header={
                                 {
                                     content: 'Статистика опций'
                                 }
                             }>
-                                <div className="flex gap-5 flex-wrap">
+                                <div className="flex gap-5 w-full flex-wrap">
                                     {task?.optionsStatistics.map((option, i) => {
                                         return (
                                             <Card
@@ -103,6 +106,23 @@ const TaskStatsView = () => {
                                 </div>
                             </Card>
                         </div>
+                        { task?.inputsStatistics?.length &&  (
+                            <Card className="mt-5" header={{
+                                content: 'Вопросы и ответы'
+                            }}>
+                                {
+                                    task?.inputsStatistics.map((input, index) => {
+                                        return (
+                                            <div key={index} className="mb-5">
+                                               <Accordion data={[{title: input.inputLabel, content: input.answers}]} />
+                                            </div>
+                                        )
+                                    })
+                                }
+
+                            </Card>
+                        ) }
+
                     </div>
             </div>
             <ToastContainer />

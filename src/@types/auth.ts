@@ -32,3 +32,13 @@ export type User = {
 export type Token = {
     access_token: string
 }
+
+// Тип для роли пользователя
+type UserRole = "PRIVATE_PERSON" | "ADMIN" | "OTHER_ROLE"; // Добавьте другие роли, если необходимо
+
+// Тип для данных пользователя
+export interface IUserMe {
+    id: number,
+    email: string,
+    role: UserRole,
+};

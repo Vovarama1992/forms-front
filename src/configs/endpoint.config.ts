@@ -4,6 +4,7 @@ const endpointConfig = {
     signIn: '/auth/login',
     signOut: '/sign-out',
     signUp: '/auth/register',
+    getUserMe: '/users/me',
     resetPassword: '/reset-password',
     tasks: {
         create: '/tasks',

@@ -1,10 +1,10 @@
 import ApiService from './ApiService'
 import endpointConfig from '@/configs/endpoint.config'
-import type {
+import {
     SignInCredential,
     SignUpCredential,
     SignInResponse,
-    SignUpResponse,
+    SignUpResponse, IUserMe
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -12,6 +12,12 @@ export async function apiSignIn(data: SignInCredential) {
         url: endpointConfig.signIn,
         method: 'post',
         data,
+    })
+}
+export async function getUserMe() {
+    return ApiService.fetchDataWithAxios<IUserMe>({
+        url: endpointConfig.getUserMe,
+        method: 'get',
     })
 }
 

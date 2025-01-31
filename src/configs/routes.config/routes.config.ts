@@ -5,6 +5,15 @@ import type { Routes } from '@/@types/routes'
 
 export const publicRoutes: Routes = [...authRoute]
 
+export const publicRoutesPages = [
+    {
+        key: 'viewTaskItem',
+        path: '/view-task-public/:label',
+        component: lazy(() => import('@/views/tasks/TaskView')),
+        authority: [],
+    }
+]
+
 export const protectedRoutes: Routes = [
     {
         key: 'createTaskItem',
