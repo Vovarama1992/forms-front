@@ -23,6 +23,7 @@ export type AuthResult = Promise<{
 }>
 
 export type User = {
+    id?: string | number | null
     userId?: string | null
     avatar?: string | null
     email?: string | null

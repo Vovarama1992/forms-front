@@ -8,12 +8,17 @@ import { IResponseStatistic } from '@/@types/task'
 import parse from 'html-react-parser'
 import Accordion from '@/components/shared/Accordion/Accordion'
 import { useSessionUser } from '@/store/authStore'
+import { Navigate } from 'react-router-dom';
 
 const TaskStatsView = () => {
 
     const [task, setTask] = useState<IResponseStatistic | null>(null);
     const params = useParams<{label: string}>();
     const user = useSessionUser((state) => state.user)
+
+    if (user.userId !== task?.userId) {
+        return <Navigate replace to="/create-task" />;
+    }
 
     useEffect(() => {
 

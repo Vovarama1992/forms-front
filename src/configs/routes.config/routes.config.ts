@@ -7,7 +7,7 @@ export const publicRoutes: Routes = [...authRoute]
 
 export const publicRoutesPages = [
     {
-        key: 'viewTaskItem',
+        key: 'viewTaskItemPublic',
         path: '/view-task-public/:label',
         component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],

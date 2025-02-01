@@ -13,6 +13,8 @@ import { z, ZodType } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { ITaskCreateResponse } from '@/@types/task'
 import { useSessionUser } from '@/store/authStore'
+import classNames from 'classnames'
+import { useLocation } from 'react-router-dom'
 
 const TaskView = () => {
     const [task, setTask] = useState<ITaskCreateResponse>()
@@ -55,7 +57,6 @@ const TaskView = () => {
                     const task = await getTaskByLabel(
                         decodeURIComponent(params.label),
                     )
-                    console.log(task)
 
                     if (task.visible === 'PRIVATE' && !user.id) {
                         setAccess(false)
@@ -100,9 +101,16 @@ const TaskView = () => {
         }
     }
 
+
+    const location = useLocation();
+    const regex = /view-task-public/;
+    const taskClass = classNames({
+        'm-auto': regex.test(location.pathname),
+        'w-3/4': true
+    });
+
     return (
         <>
-            <h3 className="h3 mb-5">Задание</h3>
             {!isAccess && (
                 <Card>
                     <h5>Доступ закрыт, необходимо авторизироваться!</h5>
@@ -110,7 +118,8 @@ const TaskView = () => {
             )}
             {task && isAccess && (
                 <>
-                    <div className="w-3/4">
+                    <div className={taskClass}>
+                        <h3 className="h3 mb-5">Задание</h3>
                         <Card
                             header={{
                                 content: task?.label,
