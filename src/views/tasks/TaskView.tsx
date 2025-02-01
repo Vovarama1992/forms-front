@@ -58,12 +58,6 @@ const TaskView = () => {
                         decodeURIComponent(params.label),
                     )
 
-                    if (task.visible === 'PRIVATE' && !user.id) {
-                        setAccess(false)
-                    } else {
-                        setAccess(true)
-                    }
-
                     if (task.id) {
                         setTask(task) // Обновляем состояние задачи
                     }
@@ -80,6 +74,15 @@ const TaskView = () => {
             toast.error('Ошибка получения задачи')
         }) // Вызываем асинхронную функцию
     }, [params.label])
+
+    useEffect(() => {
+        if (task?.visible === 'PRIVATE' && !user.id) {
+            setAccess(false)
+        } else {
+            setAccess(true)
+        }
+    }, [task, user.id]);
+
 
     const onSubmit = async (values: FormSchema) => {
         try {
