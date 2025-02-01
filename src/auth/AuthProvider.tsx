@@ -2,19 +2,17 @@ import { useRef, useImperativeHandle } from 'react'
 import AuthContext from './AuthContext'
 import appConfig from '@/configs/app.config'
 import { useSessionUser, useToken } from '@/store/authStore'
-import { apiSignIn, apiSignOut, apiSignUp, getUserMe } from '@/services/AuthService'
+import { apiSignIn, apiSignUp, getUserMe } from '@/services/AuthService'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useNavigate } from 'react-router-dom'
 import type {
     SignInCredential,
     SignUpCredential,
     AuthResult,
-    User,
     Token,
 } from '@/@types/auth'
 import type { ReactNode, Ref } from 'react'
 import type { NavigateFunction } from 'react-router-dom'
-import useAuth from '@/utils/hooks/useAuth'
 
 type AuthProviderProps = { children: ReactNode }
 

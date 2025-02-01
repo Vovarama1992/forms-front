@@ -9,6 +9,9 @@ export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCrea
         data: {
             ...data,
         }
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
     })
 }
 
@@ -18,6 +21,7 @@ export async function apiTaskImageSave(data: FormData, id: string, optionId: str
         method: 'post',
         headers: {
           'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
         },
         data: data,
     })
@@ -28,6 +32,9 @@ export async function getTaskByLabel(label: string): Promise<ITaskCreateResponse
     return ApiService.fetchDataWithAxios({
         url: `${endpointConfig.tasks.getByLabel}/${decodeURI(label)}`,
         method: 'get',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
     })
 }
 
@@ -35,6 +42,9 @@ export async function getTaskById(id: number): Promise<ITaskCreateResponse> {
     return ApiService.fetchDataWithAxios({
         url: `${endpointConfig.tasks.getById}/${id}`,
         method: 'get',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
     })
 }
 
@@ -44,6 +54,7 @@ export async function getTaskOptionsImage(taskId: string, optionId: string, opti
         method: 'get',
         headers: {
             'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
         },
     })
 }
@@ -58,6 +69,9 @@ export async function fetchTaskVote(
         data: {
             ...selectedTaskValues,
         },
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
     })
 }
 
@@ -67,5 +81,8 @@ export async function fetchTaskStatistics(
     return ApiService.fetchDataWithAxios({
         url: `${endpointConfig.tasks.statistics}/${label}`,
         method: 'get',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
     })
 }
