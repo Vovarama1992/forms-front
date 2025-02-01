@@ -18,6 +18,7 @@ export async function getUserMe() {
     return ApiService.fetchDataWithAxios<IUserMe>({
         url: endpointConfig.getUserMe,
         method: 'get',
+        headers: {'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`},
     })
 }
 
