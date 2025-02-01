@@ -8,7 +8,7 @@ export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCrea
         method: 'post',
         data: {
             ...data,
-        }
+        },
         headers: {
             'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
         },
