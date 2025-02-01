@@ -79,6 +79,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
 
     const handleSignOut = () => {
+        localStorage.removeItem('access_token')
         setToken('')
         setUser({})
         setSessionSignedIn(false)
