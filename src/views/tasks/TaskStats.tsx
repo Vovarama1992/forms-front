@@ -16,10 +16,6 @@ const TaskStatsView = () => {
     const params = useParams<{label: string}>();
     const user = useSessionUser((state) => state.user)
 
-    if (user.userId !== task?.userId) {
-        return <Navigate replace to="/create-task" />;
-    }
-
     useEffect(() => {
 
         async function fetchTaskData() {
@@ -39,6 +35,12 @@ const TaskStatsView = () => {
         })
 
     }, [params.label]);
+
+    useEffect(() => {
+        if (user.userId && user.userId !== task?.userId) {
+            window.location.href = '/create-task'
+        }
+    }, [task, user.userId])
 
 
     return (
