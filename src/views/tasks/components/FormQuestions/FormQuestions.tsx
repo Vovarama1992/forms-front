@@ -72,6 +72,7 @@ export default function FormQuestions({ control, errors, register }) {
                                         control={control}
                                         render={({ field }) => (
                                             <Upload
+                                                uploadLimit={1}
                                                 fileList={field.value}
                                                 onFileRemove={(files) =>
                                                     field.onChange(
