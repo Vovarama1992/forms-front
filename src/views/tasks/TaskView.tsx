@@ -50,17 +50,22 @@ const TaskView = () => {
     const user = useSessionUser((state) => state.user)
 
     useEffect(() => {
+        if (task?.visible === 'PRIVATE' && !user.id) {
+            setAccess(false)
+        } else {
+            setAccess(true)
+        }
+    }, [task, user.id]) // Зависимости: task и user.id
+
+    useEffect(() => {
         const fetchData = async () => {
             if (params.label) {
-                console.log(decodeURIComponent(params.label))
                 try {
                     const task = await getTaskByLabel(
                         decodeURIComponent(params.label),
                     )
 
-                    if (task.id) {
-                        setTask(task) // Обновляем состояние задачи
-                    }
+                    setTask(task) // Обновляем состояние задачи
 
                     // Обновляем состояние изображений (если нужно)
                     // setImages(images);
@@ -74,15 +79,6 @@ const TaskView = () => {
             toast.error('Ошибка получения задачи')
         }) // Вызываем асинхронную функцию
     }, [params.label])
-
-    useEffect(() => {
-        if (task?.visible === 'PRIVATE' && !user.id) {
-            setAccess(false)
-        } else {
-            setAccess(true)
-        }
-    }, [task, user.id]);
-
 
     const onSubmit = async (values: FormSchema) => {
         try {
