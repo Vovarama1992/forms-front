@@ -8,7 +8,6 @@ import { IResponseStatistic } from '@/@types/task'
 import parse from 'html-react-parser'
 import Accordion from '@/components/shared/Accordion/Accordion'
 import { useSessionUser } from '@/store/authStore'
-import { Navigate } from 'react-router-dom';
 
 const TaskStatsView = () => {
 
@@ -41,7 +40,6 @@ const TaskStatsView = () => {
             window.location.href = '/create-task'
         }
     }, [task, user.userId])
-
 
     return (
         <>
@@ -113,7 +111,7 @@ const TaskStatsView = () => {
                                 </div>
                             </Card>
                         </div>
-                        { task?.inputsStatistics?.length &&  (
+                        { task?.inputsStatistics?.length > 0 &&  (
                             <Card className="mt-5" header={{
                                 content: 'Вопросы и ответы'
                             }}>
@@ -129,7 +127,6 @@ const TaskStatsView = () => {
 
                             </Card>
                         ) }
-
                     </div>
             </div>
             <ToastContainer />
