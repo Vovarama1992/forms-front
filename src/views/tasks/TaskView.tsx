@@ -118,7 +118,6 @@ const TaskView = () => {
             {task && isAccess && (
                 <>
                     <div className={taskClass}>
-                        <h3 className="h3 mb-5">Задание</h3>
                         <Card
                             header={{
                                 content: task?.label,
