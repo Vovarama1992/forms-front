@@ -16,7 +16,7 @@ export const validationSchema: ZodType = z.object({
     ),
     inputs: z.array(z.object({
         value: z.string().optional()
-    })),
+    })).optional(),
     visible: z.string().default('PUBLIC'),
 })
 
