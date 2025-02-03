@@ -71,7 +71,7 @@ const TaskCreateView = () => {
         <>
             <h1 className="mb-5 h3">Создать задание</h1>
             <Form layout="inline" onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid-cols-1 gap-2 grid w-3/4">
+                <div className="grid-cols-1 gap-2 grid w-full md:w-3/4">
                     <div>
                         <Card>
                             <h5 className="mb-4">Общая информация</h5>

@@ -105,7 +105,7 @@ const TaskView = () => {
     const regex = /view-task-public/;
     const taskClass = classNames({
         'm-auto': regex.test(location.pathname),
-        'w-3/4': true
+        'w-full md:w-3/4': true
     });
 
     return (

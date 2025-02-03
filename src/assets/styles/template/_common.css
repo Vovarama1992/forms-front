@@ -1,3 +1,9 @@
 .task-vote-img {
     max-width: 400px;
 }
+
+@media screen and (max-width: 528px) {
+    .task-vote-img {
+        max-width: 100%;
+    }
+}

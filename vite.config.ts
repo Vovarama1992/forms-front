@@ -3,6 +3,13 @@ import react from '@vitejs/plugin-react'
 import path from 'path';
 import dynamicImport from 'vite-plugin-dynamic-import'
 
+
+
+const input = process.argv[4]?.split('=')?.[1];
+if (input) {
+  console.log('SINGLE INPUT PROVIDED: ' + input);
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), dynamicImport()],
