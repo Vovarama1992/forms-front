@@ -8,7 +8,7 @@ export const validationSchema: ZodType = z.object({
         z.object(
             {
                 label: z.string().min(1, 'Заполните название'),
-                description: z.string().min(1, 'Заполните описание').optional(),
+                description: z.string().optional(),
                 image: z.array(z.instanceof(File), {message: 'Загрузите изображение'}).nonempty('Загрузите изображение'),
                 imageDescription: z.string().optional(),
             }
