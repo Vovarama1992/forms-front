@@ -111,7 +111,7 @@ const TaskStatsView = () => {
                                 </div>
                             </Card>
                         </div>
-                        { task?.inputsStatistics?.length > 0 &&  (
+                        { !!task?.inputsStatistics?.length &&  (
                             <Card className="mt-5" header={{
                                 content: 'Вопросы и ответы'
                             }}>
