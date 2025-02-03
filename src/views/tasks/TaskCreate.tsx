@@ -30,6 +30,7 @@ const TaskCreateView = () => {
     })
 
     const onSubmit = async (values: FormSchema) => {
+        console.log(values, 'values');
         try {
             const result = await apiTaskCreate({
                 description: values.description,
@@ -38,7 +39,7 @@ const TaskCreateView = () => {
                     ...values.customQuestions,
                 ],
                 inputs: [
-                    ...values.inputs.flatMap(obj => Object.values(obj)),
+                    ...values.inputs.filter(el => el.value).flatMap(obj => Object.values(obj))
                 ],
                 visible: values.visible,
             });
