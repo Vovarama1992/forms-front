@@ -23,11 +23,16 @@ export type AuthResult = Promise<{
 }>
 
 export type User = {
-    id?: string | number | null
-    userId?: string | null
-    avatar?: string | null
-    email?: string | null
-    authority?: string[]
+    id?: string | number | null; // id может быть строкой, числом или null
+    userId?: string | null;      // userId может быть строкой или null
+    avatar?: string | null;      // avatar может быть строкой или null
+    email?: string | null;       // email может быть строкой или null
+    authority?: string[];        // authority может быть массивом строк
+    userName: string;            // userName обязательный
+    password: string;            // password обязательный
+    role: string;                // role обязательный
+    createdAt: string;           // createdAt обязательный
+    avatarUrl: string | null;    // avatarUrl может быть строк
 }
 
 export type Token = {

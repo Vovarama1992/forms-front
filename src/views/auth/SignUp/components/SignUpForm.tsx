@@ -103,7 +103,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                         render={({ field }) => (
                             <Input
                                 type="email"
-                                placeholder="Email"
+                                placeholder="Введите Email"
                                 autoComplete="off"
                                 {...field}
                             />
@@ -111,7 +111,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                     />
                 </FormItem>
                 <FormItem
-                    label="Password"
+                    label="Пароль"
                     invalid={Boolean(errors.password)}
                     errorMessage={errors.password?.message}
                 >
@@ -122,14 +122,14 @@ const SignUpForm = (props: SignUpFormProps) => {
                             <Input
                                 type="password"
                                 autoComplete="off"
-                                placeholder="Password"
+                                placeholder="Введите пароль"
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
                 <FormItem
-                    label="Confirm Password"
+                    label="Подтверждение пароля"
                     invalid={Boolean(errors.confirmPassword)}
                     errorMessage={errors.confirmPassword?.message}
                 >
@@ -140,14 +140,14 @@ const SignUpForm = (props: SignUpFormProps) => {
                             <Input
                                 type="password"
                                 autoComplete="off"
-                                placeholder="Confirm Password"
+                                placeholder="Введите пароль"
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
                 <FormItem
-                    label="Role"
+                    label="Роль"
                 >
                 <Select
                     size="sm"
@@ -160,7 +160,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                     }
                     options={roleOption}
                     onChange={(option) => handleRoleChange(option?.value)}
-                    
+
                 />
                 </FormItem>
                 <Button
@@ -169,7 +169,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                     variant="solid"
                     type="submit"
                 >
-                    {isSubmitting ? 'Creating Account...' : 'Sign Up'}
+                    {isSubmitting ? 'Создаем аккаунт...' : 'Регистрация'}
                 </Button>
             </Form>
         </div>

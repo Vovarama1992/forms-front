@@ -11,11 +11,11 @@ export type AppConfig = {
 const appConfig: AppConfig = {
     apiPrefix: 'https://app.opticard.co/api',
     //apiPrefix:  "http://127.0.0.1:3001/api",
-    authenticatedEntryPath: '/create-task',
+    authenticatedEntryPath: '/view-task-list',
     unAuthenticatedEntryPath: '/sign-in',
     locale: 'en',
-    accessTokenPersistStrategy: 'cookies',
-    enableMock: true,
+    accessTokenPersistStrategy: 'localStorage',
+    enableMock: false,
     activeNavTranslation: false,
 }
 

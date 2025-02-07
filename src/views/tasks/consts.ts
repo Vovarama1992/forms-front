@@ -32,8 +32,6 @@ export const defaultValues: FormSchema = {
             imageDescription: '',
         },
     ],
-    inputs: [{
-        value: ''
-    }],
+    inputs: [],
     visible: 'PUBLIC',
 };

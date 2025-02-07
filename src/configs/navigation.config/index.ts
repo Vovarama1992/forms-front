@@ -25,7 +25,27 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
+            {
+                key: 'ViewTasksList',
+                path: '/tasks-list',
+                title: 'Список заданий',
+                translateKey: 'nav.listTasks',
+                icon: 'groupSingleMenu',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
         ],
+    },
+    {
+        key: 'settingsUserItem',
+        path: '/user/settings',
+        title: 'Мой профиль',
+        translateKey: 'nav.singleMenuItem',
+        icon: 'singleMenu',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
     },
     /** Example purpose only, please remove */
     // {

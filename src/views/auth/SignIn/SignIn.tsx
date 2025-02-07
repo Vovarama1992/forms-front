@@ -31,9 +31,9 @@ export const SignInBase = ({
                 />
             </div>
             <div className="mb-10">
-                <h2 className="mb-2">Welcome back!</h2>
+                <h2 className="mb-2">Добро пожаловать!</h2>
                 <p className="font-semibold heading-text">
-                    Please enter your credentials to sign in!
+                    Пожалуйста, введите свои данные для входа
                 </p>
             </div>
             {message && (
@@ -51,7 +51,7 @@ export const SignInBase = ({
                             className="font-semibold heading-text mt-2 underline"
                             themeColor={false}
                         >
-                            Forgot password
+                           Забыли пароль
                         </ActionLink>
                     </div>
                 }
@@ -64,13 +64,13 @@ export const SignInBase = ({
             </div>
             <div>
                 <div className="mt-6 text-center">
-                    <span>{`Don't have an account yet?`} </span>
+                    <span>{`Уже есть аккаунт?`} </span>
                     <ActionLink
                         to={signUpUrl}
                         className="heading-text font-bold"
                         themeColor={false}
                     >
-                        Sign up
+                        Войти
                     </ActionLink>
                 </div>
             </div>

@@ -45,9 +45,6 @@ interface Input {
     taskId: number
 }
 
-export type TaskType = ITaskCreateResponse
-
-
 export interface ITaskVoteRequest {
     optionId: number;
     reason: string;
