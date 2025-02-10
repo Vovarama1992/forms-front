@@ -150,7 +150,7 @@ const TaskCreateView = () => {
 
                 for (const option of options) {
 
-                    if (option.inputId === undefined || option.inputId === null)) {
+                    if (option.inputId === undefined || option.inputId === null) {
                         const optionResult = await apiAddSingleTaskOption({
                             label: option.label,
                             description: option.description,
