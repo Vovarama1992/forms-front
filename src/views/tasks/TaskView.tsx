@@ -13,18 +13,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { ITaskCreateResponse } from '@/@types/task'
 import { useSessionUser } from '@/store/authStore'
 import classNames from 'classnames'
-import { useLocation } from 'react-router-dom'
-import { shuffleArray, usePageMetadata } from '@/views/tasks/helpers'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet';
+import { shuffleArray } from '@/views/tasks/helpers'
 
 const TaskView = () => {
 
-    usePageMetadata(
-        'Просмотр задания',
-        ''
-    );
-
     const [task, setTask] = useState<ITaskCreateResponse>()
     const params = useParams<{ id: string }>()
+    const navigate = useNavigate()
 
     type FormSchema = {
         inputs: {
@@ -70,7 +67,6 @@ const TaskView = () => {
                     const task = await getTaskById(
                         +params.id,
                     )
-
                     setTask({
                         ...task,
                         options: shuffleArray(task.options),
@@ -89,6 +85,13 @@ const TaskView = () => {
         }) // Вызываем асинхронную функцию
     }, [params.id])
 
+    // if (task) {
+    //     usePageMetadata(
+    //         task.label,
+    //         task.description
+    //     );
+    // }
+
     const onSubmit = async (values: FormSchema) => {
         try {
             await fetchTaskVote(
@@ -102,6 +105,7 @@ const TaskView = () => {
             reset({
                 inputs: {},
             })
+            window.location.assign('https://opticard.co')
             toast.success('Данные успешно отправлены')
         } catch (error) {
             console.error(error)
@@ -126,6 +130,10 @@ const TaskView = () => {
             )}
             {task && isAccess && (
                 <>
+                    <Helmet>
+                        <title>{task?.label}</title>
+                        <meta name="description" content={task.description} />
+                    </Helmet>
                     <div className={taskClass}>
                         <Card
                             header={{
@@ -136,120 +144,122 @@ const TaskView = () => {
                                 {parse(task.description)}
                             </div>
                         </Card>
-                        <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Card
-                                className="mt-5"
-                                header={{
-                                    content: 'Опции',
-                                }}
-                            >
-                                <FormItem
-                                    asterisk
-                                    label="Выбирите вариант"
-                                    className="mb-0"
-                                    invalid={Boolean(errors.option)}
-                                    errorMessage={errors.option?.message}
-                                >
-                                    <Controller
-                                        name="option"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Radio.Group vertical {...field}>
-                                                {task?.options.map((el) => {
-                                                    return (
-                                                        <Radio
-                                                            key={el.id}
-                                                            value={el.id}
-                                                        >
-                                                            <Card
-                                                                key={el.id}
-                                                                header={{
-                                                                    content:
-                                                                        el.label,
-                                                                }}
-                                                            >
-                                                                <p className="mb-4">
-                                                                    {
-                                                                        el.description
-                                                                    }
-                                                                </p>
-                                                                <img
-                                                                    className="task-vote-img"
-                                                                    src={
-                                                                        el.imageUrl
-                                                                    }
-                                                                    alt=""
-                                                                />
-                                                            </Card>
-                                                        </Radio>
-                                                    )
-                                                })}
-                                            </Radio.Group>
-                                        )}
-                                    />
-                                </FormItem>
-                                <FormItem
-                                    className="mt-7 mb-1"
-                                    label="Причина выбора опции"
-                                    invalid={Boolean(errors.reason)}
-                                    errorMessage={errors.reason?.message}
-                                >
-                                    <Controller
-                                        name="reason"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Input
-                                                type="text"
-                                                placeholder="Напишите причину выбора"
-                                                {...field}
-                                            />
-                                        )}
-                                    />
-                                </FormItem>
-                            </Card>
-                            {task.inputs.length > 0 && (
+                        { task.options.length > 0 && (
+                            <Form onSubmit={handleSubmit(onSubmit)}>
                                 <Card
                                     className="mt-5"
                                     header={{
-                                        content: 'Дополнительные вопросы',
+                                        content: 'Опции',
                                     }}
                                 >
-                                    {task.inputs.map((input) => {
-                                        return (
-                                            <FormItem
-                                                key={input.id}
-                                                label={input.label}
-                                                invalid={Boolean(
-                                                    errors.inputs?.[input.id],
-                                                )}
-                                                errorMessage={
-                                                    errors.inputs?.[input.id]
-                                                        ?.message
-                                                }
-                                            >
-                                                <Controller
-                                                    key={input.id}
-                                                    name={`inputs.${input.id.toString()}`}
-                                                    control={control}
-                                                    render={({ field }) => {
+                                    <FormItem
+                                        asterisk
+                                        label="Выбирите вариант"
+                                        className="mb-0"
+                                        invalid={Boolean(errors.option)}
+                                        errorMessage={errors.option?.message}
+                                    >
+                                        <Controller
+                                            name="option"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Radio.Group vertical {...field}>
+                                                    {task?.options.map((el) => {
                                                         return (
-                                                            <Input
-                                                                {...field}
-                                                                type="text"
-                                                                placeholder="Введите ваш ответ"
-                                                            />
+                                                            <Radio
+                                                                key={el.id}
+                                                                value={el.id}
+                                                            >
+                                                                <Card
+                                                                    key={el.id}
+                                                                    header={{
+                                                                        content:
+                                                                        el.label,
+                                                                    }}
+                                                                >
+                                                                    <p className="mb-4">
+                                                                        {
+                                                                            el.description
+                                                                        }
+                                                                    </p>
+                                                                    <img
+                                                                        className="task-vote-img"
+                                                                        src={
+                                                                            el.imageUrl
+                                                                        }
+                                                                        alt=""
+                                                                    />
+                                                                </Card>
+                                                            </Radio>
                                                         )
-                                                    }}
+                                                    })}
+                                                </Radio.Group>
+                                            )}
+                                        />
+                                    </FormItem>
+                                    <FormItem
+                                        className="mt-7 mb-1"
+                                        label="Причина выбора опции"
+                                        invalid={Boolean(errors.reason)}
+                                        errorMessage={errors.reason?.message}
+                                    >
+                                        <Controller
+                                            name="reason"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Напишите причину выбора"
+                                                    {...field}
                                                 />
-                                            </FormItem>
-                                        )
-                                    })}
+                                            )}
+                                        />
+                                    </FormItem>
                                 </Card>
-                            )}
-                            <Button className="mt-5" type="submit">
-                                Отправить
-                            </Button>
-                        </Form>
+                                {task.inputs.length > 0 && (
+                                    <Card
+                                        className="mt-5"
+                                        header={{
+                                            content: 'Дополнительные вопросы',
+                                        }}
+                                    >
+                                        {task.inputs.map((input) => {
+                                            return (
+                                                <FormItem
+                                                    key={input.id}
+                                                    label={input.label}
+                                                    invalid={Boolean(
+                                                        errors.inputs?.[input.id],
+                                                    )}
+                                                    errorMessage={
+                                                        errors.inputs?.[input.id]
+                                                            ?.message
+                                                    }
+                                                >
+                                                    <Controller
+                                                        key={input.id}
+                                                        name={`inputs.${input.id.toString()}`}
+                                                        control={control}
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <Input
+                                                                    {...field}
+                                                                    type="text"
+                                                                    placeholder="Введите ваш ответ"
+                                                                />
+                                                            )
+                                                        }}
+                                                    />
+                                                </FormItem>
+                                            )
+                                        })}
+                                    </Card>
+                                )}
+                                <Button className="mt-5" type="submit">
+                                    Отправить
+                                </Button>
+                            </Form>
+                        )}
                     </div>
                 </>
             )}

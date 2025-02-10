@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import useProductList from '../hooks/useProductList'
-import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router-dom'
-import { TbEye, TbPencil, TbTrash } from 'react-icons/tb'
+import { TbChartHistogram, TbEye, TbLink, TbPencil, TbTrash } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { TableQueries } from '@/@types/common'
 import { apiTaskFetch, apiTasksDelete } from '@/services/TaskApiService'
@@ -14,16 +12,19 @@ import { toast, ToastContainer } from 'react-toastify'
 import { Button } from '@/components/ui'
 import { AxiosError } from 'axios'
 import { usePageMetadata } from '@/views/tasks/helpers'
-import { HiOutlineDocumentSearch } from 'react-icons/hi'
 
 const ActionColumn = ({
     onEdit,
     onDelete,
     onView,
+    onCopy,
+    onStats,
 }: {
     onEdit: () => void
     onDelete: () => void
     onView: () => void
+    onCopy: () => void
+    onStats: () => void
 }) => {
     return (
         <div className="flex items-center justify-end gap-3">
@@ -52,6 +53,24 @@ const ActionColumn = ({
                     onClick={onView}
                 >
                     <TbEye /> {/* Иконка глаза для просмотра */}
+                </div>
+            </Tooltip>
+            <Tooltip title="Перейти к статистике">
+                <div
+                    className="text-xl cursor-pointer select-none font-semibold"
+                    role="button"
+                    onClick={onStats}
+                >
+                    <TbChartHistogram /> {/* Иконка для статистики */}
+                </div>
+            </Tooltip>
+            <Tooltip title="Скопировать ссылку">
+                <div
+                    className="text-xl cursor-pointer select-none font-semibold"
+                    role="button"
+                    onClick={onCopy}
+                >
+                    <TbLink /> {/* Иконка для копирования ссылки */}
                 </div>
             </Tooltip>
         </div>
@@ -87,6 +106,21 @@ const TaskListTable = () => {
     const handleEdit = (taskId: string | number) => {
         navigate(`/edit-task/${taskId}`)
     }
+
+    const handleNavigateToStats = (taskId: string | number) => {
+        navigate(`/view-task-statistics/${taskId}`)
+    }
+
+    const handleClipard = async (taskId: string | number) => {
+        // Получаем текущий протокол и хост (например, "https://example.com")
+        const { protocol, host } = window.location;
+        // Создаем полный URL для редактирования задачи
+        const fullUrl = `${protocol}//${host}/view-task/${taskId}`;
+        await navigator.clipboard.writeText(fullUrl);
+
+        toast.success("Ссылка скопирована")
+
+    };
 
     const handleConfirmDelete = async () => {
         if (!toDeleteId) return false
@@ -159,18 +193,6 @@ const TaskListTable = () => {
                 },
             },
             {
-                header: 'Количество голосов',
-                accessorKey: 'openCount',
-                cell: (props) => {
-                    const { openCount } = props.row.original
-                    return (
-                        <span className="font-bold heading-text">
-                            {openCount}
-                        </span>
-                    )
-                },
-            },
-            {
                 header: 'Голоса по опциям',
                 accessorKey: 'options',
                 cell: (props) => {
@@ -189,6 +211,18 @@ const TaskListTable = () => {
                 },
             },
             {
+                header: 'Количество голосов',
+                accessorKey: 'openCount',
+                cell: (props) => {
+                    const { openCount } = props.row.original
+                    return (
+                        <span className="font-bold heading-text">
+                            {openCount}
+                        </span>
+                    )
+                },
+            },
+            {
                 header: '',
                 id: 'action',
                 cell: (props) => (
@@ -196,6 +230,8 @@ const TaskListTable = () => {
                         onEdit={() => handleEdit(props.row.original.id)}
                         onDelete={() => handleDelete(props.row.original)}
                         onView={() => handleView(props.row.original.id)}
+                        onCopy={() => handleClipard(props.row.original.id)}
+                        onStats={() => handleNavigateToStats(props.row.original.id)}
                     />
                 ),
             },
