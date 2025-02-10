@@ -99,12 +99,8 @@ const TaskListTable = () => {
         setToDeleteId([task.id])
     }
 
-    const handleView = (taskId: string | number, visible: 'PRIVATE' | 'PUBLIC') => {
-        if (visible === 'PRIVATE') {
-            navigate(`/view-task/${taskId}`)
-        } else {
-            navigate(`/view-task-public/${taskId}`)
-        }
+    const handleView = (taskId: string | number) => {
+         navigate(`/view-task/${taskId}`)
     }
 
     const handleEdit = (taskId: string | number) => {
@@ -115,11 +111,16 @@ const TaskListTable = () => {
         navigate(`/view-task-statistics/${taskId}`)
     }
 
-    const handleClipard = async (taskId: string | number) => {
+    const handleClipard = async (taskId: string | number, visible: 'PRIVATE' | 'PUBLIC') => {
         // Получаем текущий протокол и хост (например, "https://example.com")
         const { protocol, host } = window.location;
         // Создаем полный URL для редактирования задачи
-        const fullUrl = `${protocol}//${host}/view-task/${taskId}`;
+        let fullUrl = `${protocol}//${host}/`;
+        if (visible === 'PRIVATE') {
+            fullUrl += `view-task/${taskId}`
+        } else {
+            fullUrl += `view-task-public/${taskId}`
+        }
         await navigator.clipboard.writeText(fullUrl);
 
         toast.success("Ссылка скопирована")
@@ -236,8 +237,8 @@ const TaskListTable = () => {
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original.id)}
                         onDelete={() => handleDelete(props.row.original)}
-                        onView={() => handleView(props.row.original.id, props.row.original.visible)}
-                        onCopy={() => handleClipard(props.row.original.id)}
+                        onView={() => handleView(props.row.original.id)}
+                        onCopy={() => handleClipard(props.row.original.id, props.row.original.visible)}
                         onStats={() => handleNavigateToStats(props.row.original.id)}
                     />
                 ),
