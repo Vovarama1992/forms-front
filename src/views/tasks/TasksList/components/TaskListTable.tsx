@@ -218,10 +218,13 @@ const TaskListTable = () => {
                 header: 'Количество голосов',
                 accessorKey: 'openCount',
                 cell: (props) => {
-                    const { openCount } = props.row.original
+                    const { options } = props.row.original
+                    const result = options.reduce((acc, curr, currentIndex) => {
+                        return acc  + curr._count;
+                    }, 0)
                     return (
                         <span className="font-bold heading-text">
-                            {openCount}
+                            {result}
                         </span>
                     )
                 },
