@@ -122,7 +122,6 @@ const TaskCreateView = () => {
     }
 
     const onQuestionRemove = async (id: number) => {
-        console.log(id);
         try {
             if (oldTask?.id && id) {
                 await apiDeleteSingleTaskOption(oldTask.id, id);
@@ -150,14 +149,13 @@ const TaskCreateView = () => {
 
                 for (const option of options) {
 
-                    if (option.inputId === undefined || option.inputId === null) {
+                    if (option.optionId === undefined || option.optionId === null) {
                         const optionResult = await apiAddSingleTaskOption({
                             label: option.label,
                             description: option.description,
                         }, oldTask.id);
 
                         if (option?.image) {
-                            console.log(option, 'this');
                             const formData = new FormData()
                             option?.image.forEach(imageInner => {
                                 formData.append('file', imageInner)
@@ -181,7 +179,6 @@ const TaskCreateView = () => {
                     label: values.label,
                     visible: values.visible,
                 }, oldTask.id);
-                console.log(updateTask);
             }
             toast.success('Задание успешно обновлено')
             // reset({ ...defaultValues })
