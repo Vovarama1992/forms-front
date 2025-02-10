@@ -93,7 +93,9 @@ export async function apiAddSingleTaskInput(data: string, taskId: number): Promi
     return ApiService.fetchDataWithAxios({
         url: `${endpointConfig.tasks.tasks}/${taskId}/inputs`,
         method: 'post',
-        data: data,
+        data: {
+            inputLabel: data,
+        },
         headers: {
             'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
         },
