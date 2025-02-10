@@ -181,7 +181,7 @@ const TaskListTable = () => {
                         return (
                             <>
                                 <div className="font-bold heading-text">
-                                    Название: {label}
+                                    {label}
                                 </div>
                                 <div className="">ID: {id}</div>
                             </>
