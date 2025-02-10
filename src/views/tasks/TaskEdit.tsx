@@ -150,23 +150,24 @@ const TaskCreateView = () => {
 
                 for (const option of options) {
 
-                    const optionResult = await apiAddSingleTaskOption({
-                        label: option.label,
-                        description: option.description,
-                    }, oldTask.id);
+                    if (option.inputId === undefined || option.inputId === null)) {
+                        const optionResult = await apiAddSingleTaskOption({
+                            label: option.label,
+                            description: option.description,
+                        }, oldTask.id);
 
-                    if (option?.image) {
-                        console.log(option, 'this');
-                        const formData = new FormData()
-                        option?.image.forEach(imageInner => {
-                            formData.append('file', imageInner)
-                        })
-                        await apiTaskImageSave(formData, oldTask.id.toString(), optionResult.id.toString()).catch(e => {
-                            toast.error(e.response.data.message);
-                        });
+                        if (option?.image) {
+                            console.log(option, 'this');
+                            const formData = new FormData()
+                            option?.image.forEach(imageInner => {
+                                formData.append('file', imageInner)
+                            })
+                            await apiTaskImageSave(formData, oldTask.id.toString(), optionResult.id.toString()).catch(e => {
+                                toast.error(e.response.data.message);
+                            });
+                        }
                     }
 
-                    console.log(optionResult, 'option');
                     // if (input.value) {
                     //     console.log(input.value, 'dasds')
                     //     await apiAddSingleTaskInput(input.value, oldTask?.id);
