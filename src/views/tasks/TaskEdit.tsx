@@ -69,9 +69,10 @@ const TaskCreateView = () => {
 
         // setDescription(task.description?.replace(/<\/?[^>]+(>|$)/g, "") || "")
 
+
         task.options.forEach((option, index) => {
             if (option.imageUrl) {
-                urlToFile(option.imageUrl, option.label).then(r => {
+                urlToFile(option.imageUrl).then(r => {
                     const options = getValues('customQuestions');
                     options[index].image = [r]
                     setValue('customQuestions', options);
@@ -338,11 +339,7 @@ const TaskCreateView = () => {
                                                                     uploadLimit={1}
                                                                     fileList={field.value}
                                                                     onFileRemove={(files) => {
-                                                                        if (!item.optionId) {
-                                                                            field.onChange(files);
-                                                                        } else {
-                                                                            return false
-                                                                        }
+                                                                        field.onChange(files);
                                                                     }}
                                                                     onChange={(files) =>
                                                                         field.onChange(

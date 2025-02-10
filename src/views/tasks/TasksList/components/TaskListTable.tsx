@@ -99,8 +99,12 @@ const TaskListTable = () => {
         setToDeleteId([task.id])
     }
 
-    const handleView = (taskId: string | number) => {
-        navigate(`/view-task/${taskId}`)
+    const handleView = (taskId: string | number, visible: 'PRIVATE' | 'PUBLIC') => {
+        if (visible === 'PRIVATE') {
+            navigate(`/view-task/${taskId}`)
+        } else {
+            navigate(`/view-task-public/${taskId}`)
+        }
     }
 
     const handleEdit = (taskId: string | number) => {
@@ -229,7 +233,7 @@ const TaskListTable = () => {
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original.id)}
                         onDelete={() => handleDelete(props.row.original)}
-                        onView={() => handleView(props.row.original.id)}
+                        onView={() => handleView(props.row.original.id, props.row.original.visible)}
                         onCopy={() => handleClipard(props.row.original.id)}
                         onStats={() => handleNavigateToStats(props.row.original.id)}
                     />
