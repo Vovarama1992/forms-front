@@ -12,9 +12,18 @@ import { FormSchema } from '@/views/tasks/types/types'
 import { defaultValues, validationSchema } from '@/views/tasks/consts'
 import { ToastContainer, toast } from 'react-toastify';
 import { Radio } from '@/components/ui'
+import { usePageMetadata } from '@/views/tasks/helpers'
+import { useNavigate } from 'react-router-dom'
 
 
 const TaskCreateView = () => {
+
+    const navigate = useNavigate()
+
+    usePageMetadata(
+        'Создать задание',
+        ''
+    );
 
     const {
         control,
@@ -30,7 +39,6 @@ const TaskCreateView = () => {
     })
 
     const onSubmit = async (values: FormSchema) => {
-        console.log(values, 'values');
         try {
             const result = await apiTaskCreate({
                 description: values.description,
@@ -61,9 +69,8 @@ const TaskCreateView = () => {
             }
             toast.success('Задание успешно создано')
             reset({ ...defaultValues })
-            console.log(result);
+            navigate('/tasks-view-list')
         } catch (e) {
-            console.log(e);
             toast.error("Произошла ошибка")
         }
     }
@@ -165,7 +172,7 @@ const TaskCreateView = () => {
                     </div>
                     <div className="grid-cols">
                         <Button className="mt-2" type="submit" variant="solid">
-                            Отправить
+                            Создать
                         </Button>
                     </div>
                 </div>

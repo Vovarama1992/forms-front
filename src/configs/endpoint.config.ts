@@ -10,6 +10,7 @@ const endpointConfig = {
         create: '/tasks',
         tasks: '/tasks',
         vote: '/tasks',
+        myTasks: '/tasks/my-tasks',
         saveImage: '/images/upload-option-image/',
         getById: '/tasks/by-id',
         getByLabel: '/tasks/by-label',

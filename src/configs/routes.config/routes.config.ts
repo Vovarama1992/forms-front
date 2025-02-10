@@ -8,7 +8,7 @@ export const publicRoutes: Routes = [...authRoute]
 export const publicRoutesPages = [
     {
         key: 'viewTaskItemPublic',
-        path: '/view-task-public/:label',
+        path: '/view-task-public/:id',
         component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],
     }
@@ -29,8 +29,14 @@ export const protectedRoutes: Routes = [
     },
     {
         key: 'viewTaskItem',
-        path: '/view-task/:label',
+        path: '/view-task/:id',
         component: lazy(() => import('@/views/tasks/TaskView')),
+        authority: [],
+    },
+    {
+        key: 'viewTaskItem',
+        path: '/edit-task/:id',
+        component: lazy(() => import('@/views/tasks/TaskEdit')),
         authority: [],
     },
     {

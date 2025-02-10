@@ -22,7 +22,7 @@ export interface ITaskCreateResponse {
 export interface ITaskOptionResponse {
     imageUrl?: string
     id: number
-    taskId: number
+    taskId?: number
     label: string
     description: string
 }
@@ -34,7 +34,7 @@ export interface ITaskInputResponse {
     createdAt: string
 }
 
-interface TaskOption {
+export interface TaskOption {
     label: string
     description: string
     taskId?: number
@@ -76,4 +76,41 @@ export interface IResponseStatistic {
     taskDetails: TaskDetails
     totalVotes: number
     userId?: string | number
+}
+
+export interface ITaskTableSingle {
+    id: number
+    creatorId: number
+    label: string
+    visible: 'PUBLIC' | 'PRIVATE'
+    description: string
+    openCount: number
+    createdAt: string
+    updatedAt: string
+    options: {
+        label: string
+        _count: number
+    }[]
+}
+
+export interface ITaskTable {
+    [key: string]: number | string;
+    id: number
+    creatorId: number
+    label: string
+    visible: 'PUBLIC' | 'PRIVATE'
+    description: string
+    openCount: number
+    createdAt: string
+    updatedAt: string
+    options: {
+        label: string
+        _count: number
+    }[]
+}
+
+export interface ITaskUpdate {
+    label: string
+    description: string
+    visible: string
 }

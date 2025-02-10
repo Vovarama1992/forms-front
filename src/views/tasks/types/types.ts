@@ -1,6 +1,7 @@
 export type FormSchema = {
     label: string // Обязательное поле, строка
-    description?: '',
+    description?: string,
+    imageUrl?: string,
     customQuestions: {
         imageDescription?: string // Обязательное поле, строка
         image?: File[]// Опциональное поле, может быть файлом или undefined

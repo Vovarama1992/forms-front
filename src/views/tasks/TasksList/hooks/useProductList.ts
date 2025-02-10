@@ -5,6 +5,7 @@ import type { GetProductListResponse } from '../types'
 import type { TableQueries } from '@/@types/common'
 
 const useProductList = () => {
+
     const {
         tableData,
         filterData,
@@ -16,7 +17,7 @@ const useProductList = () => {
     } = useProductListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
-        ['/api/products', { ...tableData, ...filterData }],
+        ['/api/tasks/my-tasks', { ...tableData, ...filterData }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, params]) =>
             apiGetProductList<GetProductListResponse, TableQueries>(params),

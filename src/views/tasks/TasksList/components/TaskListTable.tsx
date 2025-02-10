@@ -1,46 +1,33 @@
-import { useMemo, useState } from 'react'
-import Avatar from '@/components/ui/Avatar'
-import Progress from '@/components/ui/Progress'
+import { useEffect, useMemo, useState } from 'react'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import useProductList from '../hooks/useProductList'
-import classNames from '@/utils/classNames'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router-dom'
-import { TbPencil, TbTrash } from 'react-icons/tb'
-import { FiPackage } from 'react-icons/fi'
-import { NumericFormat } from 'react-number-format'
+import { TbEye, TbPencil, TbTrash } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
-import type { Product } from '../types'
 import type { TableQueries } from '@/@types/common'
-
-const TaskColumn = ({ row }: { row: Product }) => {
-    return (
-        <div className="flex items-center gap-2">
-            <Avatar
-                shape="round"
-                size={60}
-                {...(row.img ? { src: row.img } : { icon: <FiPackage /> })}
-            />
-            <div>
-                <div className="font-bold heading-text mb-1">{row.name}</div>
-                <span>ID: {row.productCode}</span>
-            </div>
-        </div>
-    )
-}
+import { apiTaskFetch, apiTasksDelete } from '@/services/TaskApiService'
+import { ITaskTable, ITaskTableSingle } from '@/@types/task'
+import { toast, ToastContainer } from 'react-toastify'
+import { Button } from '@/components/ui'
+import { AxiosError } from 'axios'
+import { usePageMetadata } from '@/views/tasks/helpers'
+import { HiOutlineDocumentSearch } from 'react-icons/hi'
 
 const ActionColumn = ({
     onEdit,
     onDelete,
+    onView,
 }: {
     onEdit: () => void
     onDelete: () => void
+    onView: () => void
 }) => {
     return (
         <div className="flex items-center justify-end gap-3">
-            <Tooltip title="Edit">
+            <Tooltip title="Редактировать">
                 <div
                     className={`text-xl cursor-pointer select-none font-semibold`}
                     role="button"
@@ -49,7 +36,7 @@ const ActionColumn = ({
                     <TbPencil />
                 </div>
             </Tooltip>
-            <Tooltip title="Delete">
+            <Tooltip title="Удалить">
                 <div
                     className={`text-xl cursor-pointer select-none font-semibold`}
                     role="button"
@@ -58,124 +45,145 @@ const ActionColumn = ({
                     <TbTrash />
                 </div>
             </Tooltip>
+            <Tooltip title="Просмотреть">
+                <div
+                    className={`text-xl cursor-pointer select-none font-semibold`}
+                    role="button"
+                    onClick={onView}
+                >
+                    <TbEye /> {/* Иконка глаза для просмотра */}
+                </div>
+            </Tooltip>
         </div>
     )
 }
 
 const TaskListTable = () => {
+
+    usePageMetadata(
+        'Список заданий',
+        ''
+    );
+
     const navigate = useNavigate()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
-    const [toDeleteId, setToDeleteId] = useState('')
+    const [toDeleteId, setToDeleteId] = useState<number[] | null>(null)
+    const [selectedTasks, setSelectedTasks] = useState<ITaskTableSingle[]>([]);
 
     const handleCancel = () => {
         setDeleteConfirmationOpen(false)
     }
 
-    const handleDelete = (product: Product) => {
+    const handleDelete = (task: ITaskTableSingle) => {
         setDeleteConfirmationOpen(true)
-        setToDeleteId(product.id)
+        setToDeleteId([task.id])
     }
 
-    const handleEdit = (product: Product) => {
-        navigate(`/concepts/products/product-edit/${product.id}`)
+    const handleView = (taskId: string | number) => {
+        navigate(`/view-task/${taskId}`)
     }
 
-    const handleConfirmDelete = () => {
-        const newProductList = productList.filter((product) => {
-            return !(toDeleteId === product.id)
+    const handleEdit = (taskId: string | number) => {
+        navigate(`/edit-task/${taskId}`)
+    }
+
+    const handleConfirmDelete = async () => {
+        if (!toDeleteId) return false
+        const newProductList = tasks.filter((task) => {
+            return !toDeleteId.includes(task.id);
         })
-        setSelectAllProduct([])
-        mutate(
-            {
-                list: newProductList,
-                total: productListTotal - selectedProduct.length,
-            },
-            false,
-        )
+        setSelectedTasks([])
+        setTasks(newProductList);
+        try {
+            await apiTasksDelete(toDeleteId)
+            toast.success('Задание успешно удалено')
+        } catch (e) {
+            const error = e as AxiosError<{ message: string }>;
+            toast.error(error.message)
+        }
         setDeleteConfirmationOpen(false)
-        setToDeleteId('')
+        setToDeleteId(null)
     }
 
-    const {
-        productList,
-        productListTotal,
-        tableData,
-        isLoading,
-        setTableData,
-        setSelectAllProduct,
-        setSelectedProduct,
-        selectedProduct,
-        mutate,
-    } = useProductList()
+    const handleMassDelete = async () => {
+        console.log(selectedTasks)
+        setToDeleteId([...selectedTasks.map((elem) => elem.id)])
+        setDeleteConfirmationOpen(true)
+    }
 
-    const columns: ColumnDef<Product>[] = useMemo(
+
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [tasks, setTasks] = useState<ITaskTable[]>([]);
+
+    useEffect(() => {
+
+        async function getData() {
+            try {
+                const tasks = await apiTaskFetch();
+                setTasks(tasks);
+            } catch (e) {
+                const error = e as AxiosError<{ message: string }>;
+                toast.error(error.message)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        getData();
+    }, [])
+
+    const columns: ColumnDef<ITaskTable>[] = useMemo(
         () => [
             {
-                header: 'Product',
-                accessorKey: 'name',
+                header: 'Название',
+                accessorKey: 'label',
+            },
+            {
+                header: 'Тип',
+                accessorKey: 'visible',
                 cell: (props) => {
-                    const row = props.row.original
-                    return <TaskColumn row={row} />
+                    const { visible } = props.row.original
+                    if (visible === 'PUBLIC') {
+                        return (
+                            <span className="font-bold heading-text">
+                            Публичный
+                        </span>
+                        )
+                    } else {
+                        return (
+                            <span className="font-bold heading-text">
+                            Приватный
+                        </span>
+                        )
+                    }
                 },
             },
             {
-                header: 'Price',
-                accessorKey: 'price',
+                header: 'Количество голосов',
+                accessorKey: 'openCount',
                 cell: (props) => {
-                    const { price } = props.row.original
+                    const { openCount } = props.row.original
                     return (
                         <span className="font-bold heading-text">
-                            <NumericFormat
-                                fixedDecimalScale
-                                prefix="$"
-                                displayType="text"
-                                value={price}
-                                decimalScale={2}
-                                thousandSeparator={true}
-                            />
+                            {openCount}
                         </span>
                     )
                 },
             },
             {
-                header: 'Quantity',
-                accessorKey: 'stock',
+                header: 'Голоса по опциям',
+                accessorKey: 'options',
                 cell: (props) => {
-                    const row = props.row.original
-                    return (
-                        <span className="font-bold heading-text">
-                            {row.stock}
-                        </span>
-                    )
-                },
-            },
-            {
-                header: 'Sales',
-                accessorKey: 'status',
-                cell: (props) => {
-                    const { salesPercentage, sales } = props.row.original
+                    const { options } = props.row.original
+                    const result = options.reduce((acc, curr, currentIndex) => {
+                        const dash = currentIndex !== options.length - 1 ? '/' : '';
+                        return acc  + curr._count + dash;
+                    }, '')
                     return (
                         <div className="flex flex-col gap-1">
                             <span className="flex gap-1">
-                                <span className="font-semibold">
-                                    <NumericFormat
-                                        displayType="text"
-                                        value={sales}
-                                        thousandSeparator={true}
-                                    />
-                                </span>
-                                <span>Sales</span>
+                                { result }
                             </span>
-                            <Progress
-                                percent={salesPercentage}
-                                showInfo={false}
-                                customColorClass={classNames(
-                                    'bg-error',
-                                    salesPercentage > 40 && 'bg-warning',
-                                    salesPercentage > 70 && 'bg-success',
-                                )}
-                            />
                         </div>
                     )
                 },
@@ -185,8 +193,9 @@ const TaskListTable = () => {
                 id: 'action',
                 cell: (props) => (
                     <ActionColumn
-                        onEdit={() => handleEdit(props.row.original)}
+                        onEdit={() => handleEdit(props.row.original.id)}
                         onDelete={() => handleDelete(props.row.original)}
+                        onView={() => handleView(props.row.original.id)}
                     />
                 ),
             },
@@ -195,73 +204,86 @@ const TaskListTable = () => {
         [],
     )
 
-    const handleSetTableData = (data: TableQueries) => {
-        setTableData(data)
-        if (selectedProduct.length > 0) {
-            setSelectAllProduct([])
+    const handleSort = (sort: OnSortParam) => {
+        const {order, key} = sort;
+        if (order.toLocaleLowerCase() === 'asc' || order.toLocaleLowerCase() === 'desc') {
+
+            const sortedTasks = [...tasks];
+
+            sortedTasks.sort((a, b) => {
+                const valueA = a[key];
+                const valueB = b[key];
+
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                    return order.toLowerCase() === 'asc' ? valueA - valueB : valueB - valueA;
+                }
+
+                if (typeof valueA === 'string' && typeof valueB === 'string') {
+                    return order.toLowerCase() === 'asc'
+                        ? valueA.localeCompare(valueB)
+                        : valueB.localeCompare(valueA);
+                }
+                return 0;
+            });
+            setTasks(sortedTasks)
         }
     }
 
-    const handlePaginationChange = (page: number) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.pageIndex = page
-        handleSetTableData(newTableData)
+    const handleRowSelect = (checked: boolean, row: ITaskTableSingle) => {
+        const prevData = selectedTasks.concat()
+        console.log(selectedTasks, 'prevValue');
+        if (checked) {
+            setSelectedTasks([...selectedTasks, ...[row]])
+            return selectedTasks;
+        } else {
+            if (prevData.some((prevTask) => row.id === prevTask.id)) {
+                  const selectedProducts = prevData.filter((prevTask) => prevTask.id !== row.id)
+                  setSelectedTasks([...selectedProducts]);
+            }
+            setSelectedTasks([...prevData])
+        }
     }
 
-    const handleSelectChange = (value: number) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.pageSize = Number(value)
-        newTableData.pageIndex = 1
-        handleSetTableData(newTableData)
-    }
-
-    const handleSort = (sort: OnSortParam) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.sort = sort
-        handleSetTableData(newTableData)
-    }
-
-    const handleRowSelect = (checked: boolean, row: Product) => {
-        setSelectedProduct(checked, row)
-    }
-
-    const handleAllRowSelect = (checked: boolean, rows: Row<Product>[]) => {
+    const handleAllRowSelect = (checked: boolean, rows: Row<ITaskTableSingle>[]) => {
         if (checked) {
             const originalRows = rows.map((row) => row.original)
-            setSelectAllProduct(originalRows)
+            setSelectedTasks(originalRows)
         } else {
-            setSelectAllProduct([])
+            setSelectedTasks([])
         }
     }
 
     return (
         <>
             <DataTable
-                selectable
+                compact
+                overflow
                 columns={columns}
-                data={productList}
-                noData={!isLoading && productList.length === 0}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ width: 28, height: 28 }}
+                data={tasks}
+                noData={tasks.length === 0}
                 loading={isLoading}
-                pagingData={{
-                    total: productListTotal,
-                    pageIndex: tableData.pageIndex as number,
-                    pageSize: tableData.pageSize as number,
-                }}
-                checkboxChecked={(row) =>
+                isPagination={false}
+                className="task-custom-table"
+/*                checkboxChecked={(row) =>
                     selectedProduct.some((selected) => selected.id === row.id)
-                }
-                onPaginationChange={handlePaginationChange}
-                onSelectChange={handleSelectChange}
+                }*/
                 onSort={handleSort}
                 onCheckBoxChange={handleRowSelect}
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
             />
+            { selectedTasks.length > 0 && (
+                <div>
+                    <Button variant="solid" className="bg-red-500 hover:bg-red-400" onClick={() => handleMassDelete()}>
+                        Удалить выбранные задания
+                    </Button>
+                </div>
+            ) }
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
                 type="danger"
-                title="Remove products"
+                title="Удаление задания"
+                confirmText={"Удалить"}
+                cancelText={"Отменить"}
                 onClose={handleCancel}
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
@@ -269,10 +291,10 @@ const TaskListTable = () => {
             >
                 <p>
                     {' '}
-                    Are you sure you want to remove this product? This action
-                    can&apos;t be undo.{' '}
+                    Вы уверены, что хотите удалить это задание/задания? Это действие нельзя отменить.{' '}
                 </p>
             </ConfirmDialog>
+            <ToastContainer/>
         </>
     )
 }

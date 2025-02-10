@@ -4,6 +4,7 @@ import SettingsMenu from './components/SettingsMenu'
 import SettingMobileMenu from './components/SettingMobileMenu'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { useSettingsStore } from './store/settingsStore'
+import { usePageMetadata } from '@/views/tasks/helpers'
 
 const Profile = lazy(() => import('./components/SettingsProfile'))
 const Security = lazy(() => import('./components/SettingsSecurity'))
@@ -11,6 +12,12 @@ const Billing = lazy(() => import('./components/SettingsBilling'))
 const Integration = lazy(() => import('./components/SettingIntegration'))
 
 const Settings = () => {
+
+    usePageMetadata(
+        'Мой профиль',
+        ''
+    );
+
     const { currentView } = useSettingsStore()
 
     const { smaller, larger } = useResponsive()

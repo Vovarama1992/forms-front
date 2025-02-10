@@ -8,12 +8,19 @@ import { IResponseStatistic } from '@/@types/task'
 import parse from 'html-react-parser'
 import Accordion from '@/components/shared/Accordion/Accordion'
 import { useSessionUser } from '@/store/authStore'
+import { usePageMetadata } from '@/views/tasks/helpers'
 
 const TaskStatsView = () => {
+
+    usePageMetadata(
+        'Статистика задания',
+        ''
+    );
 
     const [task, setTask] = useState<IResponseStatistic | null>(null);
     const params = useParams<{label: string}>();
     const user = useSessionUser((state) => state.user)
+
 
     useEffect(() => {
 

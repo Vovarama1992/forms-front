@@ -2,8 +2,8 @@ import Avatar from '@/components/ui/Avatar'
 import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import { useSessionUser } from '@/store/authStore'
-import { Link } from 'react-router-dom'
-import { PiUserDuotone, PiSignOutDuotone } from 'react-icons/pi'
+import { Link, useNavigate } from 'react-router-dom'
+import { PiUserDuotone, PiSignOutDuotone, PiUserCircleDuotone } from 'react-icons/pi'
 import { useAuth } from '@/auth'
 import type { JSX } from 'react'
 
@@ -18,6 +18,7 @@ const dropdownItemList: DropdownList[] = []
 const _UserDropdown = () => {
     const { avatar, email } = useSessionUser((state) => state.user)
 
+    const navigate = useNavigate()
     const { signOut } = useAuth()
 
     const handleSignOut = () => {
@@ -64,6 +65,16 @@ const _UserDropdown = () => {
                     </Link>
                 </Dropdown.Item>
             ))}
+            <Dropdown.Item
+                eventKey="Profile"
+                className="gap-2"
+                onClick={() => navigate(`user/settings`)} // или ваш обработчик
+            >
+                <span className="text-xl">
+                    <PiUserCircleDuotone /> {/* Иконка профиля */}
+                </span>
+                <span>Мой профиль</span>
+            </Dropdown.Item>
             <Dropdown.Item
                 eventKey="Sign Out"
                 className="gap-2"

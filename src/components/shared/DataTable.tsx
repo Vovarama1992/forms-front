@@ -33,6 +33,7 @@ import type { CheckboxProps } from '@/components/ui/Checkbox'
 export type OnSortParam = { order: 'asc' | 'desc' | ''; key: string | number }
 
 type DataTableProps<T> = {
+    isPagination?: boolean
     columns: ColumnDef<T>[]
     customNoDataIcon?: ReactNode
     data?: unknown[]
@@ -129,6 +130,7 @@ function DataTable<T>(props: DataTableProps<T>) {
             pageIndex: 1,
             pageSize: 10,
         },
+        isPagination = true,
         checkboxChecked,
         indeterminateCheckboxChecked,
         instanceId = 'data-table',
@@ -373,27 +375,29 @@ function DataTable<T>(props: DataTableProps<T>) {
                     </TBody>
                 )}
             </Table>
-            <div className="flex items-center justify-between mt-4">
-                <Pagination
-                    pageSize={pageSize}
-                    currentPage={pageIndex}
-                    total={total}
-                    onChange={handlePaginationChange}
-                />
-                <div style={{ minWidth: 130 }}>
-                    <Select
-                        instanceId={instanceId}
-                        size="sm"
-                        menuPlacement="top"
-                        isSearchable={false}
-                        value={pageSizeOption.filter(
-                            (option) => option.value === pageSize,
-                        )}
-                        options={pageSizeOption}
-                        onChange={(option) => handleSelectChange(option?.value)}
+            { isPagination && (
+                <div className="flex items-center justify-between mt-4">
+                    <Pagination
+                        pageSize={pageSize}
+                        currentPage={pageIndex}
+                        total={total}
+                        onChange={handlePaginationChange}
                     />
+                    <div style={{ minWidth: 130 }}>
+                        <Select
+                            instanceId={instanceId}
+                            size="sm"
+                            menuPlacement="top"
+                            isSearchable={false}
+                            value={pageSizeOption.filter(
+                                (option) => option.value === pageSize,
+                            )}
+                            options={pageSizeOption}
+                            onChange={(option) => handleSelectChange(option?.value)}
+                        />
+                    </div>
                 </div>
-            </div>
+            ) }
         </Loading>
     )
 }

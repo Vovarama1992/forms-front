@@ -2,8 +2,7 @@ import Card from '@/components/ui/Card'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import {
-    fetchTaskVote,
-    getTaskByLabel,
+    fetchTaskVote, getTaskById,
 } from '@/services/TaskApiService'
 import { FormItem, Radio, Input, Button, Form } from '@/components/ui'
 import { ToastContainer, toast } from 'react-toastify'
@@ -15,10 +14,17 @@ import type { ITaskCreateResponse } from '@/@types/task'
 import { useSessionUser } from '@/store/authStore'
 import classNames from 'classnames'
 import { useLocation } from 'react-router-dom'
+import { shuffleArray, usePageMetadata } from '@/views/tasks/helpers'
 
 const TaskView = () => {
+
+    usePageMetadata(
+        'Просмотр задания',
+        ''
+    );
+
     const [task, setTask] = useState<ITaskCreateResponse>()
-    const params = useParams<{ label: string }>()
+    const params = useParams<{ id: string }>()
 
     type FormSchema = {
         inputs: {
@@ -59,13 +65,16 @@ const TaskView = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (params.label) {
+            if (params.id) {
                 try {
-                    const task = await getTaskByLabel(
-                        decodeURIComponent(params.label),
+                    const task = await getTaskById(
+                        +params.id,
                     )
 
-                    setTask(task) // Обновляем состояние задачи
+                    setTask({
+                        ...task,
+                        options: shuffleArray(task.options),
+                    }) // Обновляем состояние задачи
 
                     // Обновляем состояние изображений (если нужно)
                     // setImages(images);
@@ -78,7 +87,7 @@ const TaskView = () => {
             console.error(e)
             toast.error('Ошибка получения задачи')
         }) // Вызываем асинхронную функцию
-    }, [params.label])
+    }, [params.id])
 
     const onSubmit = async (values: FormSchema) => {
         try {
@@ -208,6 +217,7 @@ const TaskView = () => {
                                     {task.inputs.map((input) => {
                                         return (
                                             <FormItem
+                                                key={input.id}
                                                 label={input.label}
                                                 invalid={Boolean(
                                                     errors.inputs?.[input.id],

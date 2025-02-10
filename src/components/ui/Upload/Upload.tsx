@@ -224,10 +224,12 @@ const Upload = (props: UploadProps) => {
                             file={file}
                             className={fileItemClass}
                         >
-                            <CloseButton
-                                className="upload-file-remove"
-                                onClick={() => removeFile(index)}
-                            />
+                            { !disabled && (
+                                <CloseButton
+                                    className="upload-file-remove"
+                                    onClick={() => removeFile(index)}
+                                />
+                            ) }
                         </FileItem>
                     ))}
                 </div>

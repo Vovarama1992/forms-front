@@ -24,8 +24,8 @@ type ProfileSchema = {
     firstName?: string
     lastName?: string
     email?: string
-    dialCode: string
-    phoneNumber: string
+    dialCode?: string
+    phone: string
     avatarUrl: string
 }
 
@@ -143,15 +143,13 @@ const SettingsProfile = () => {
 
     const onSubmit = async (values: ProfileSchema) => {
         try {
-            if (avatar) {
-                const formData = new FormData();
-                formData.append('file', avatar)
-                await updateUserAvatar(user.id as number, formData);
-            }
+            const formData = new FormData();
+            formData.append('file', avatar || null)
+            await updateUserAvatar(user.id as number, formData);
             await updateUserProfile({
                 firstName: values.firstName || '',
                 lastName: values.lastName || '',
-                phone: values.dialCode + values.phoneNumber,
+                phone: values.phone,
             })
             toast.success('Данные успешно обновлены');
             console.log(values);
@@ -273,43 +271,43 @@ const SettingsProfile = () => {
                     </FormItem>
                 </div>
                 <div className="flex items-end gap-4 w-full mt-4">
+                    {/*<FormItem*/}
+                    {/*    invalid={*/}
+                    {/*        Boolean(errors.phone)*/}
+                    {/*    }*/}
+                    {/*>*/}
+                    {/*    <label className="form-label mb-2">Номер телефона</label>*/}
+                    {/*    <Controller*/}
+                    {/*        name="dialCode"*/}
+                    {/*        control={control}*/}
+                    {/*        render={({ field }) => (*/}
+                    {/*            <Select<CountryOption>*/}
+                    {/*                options={dialCodeList}*/}
+                    {/*                {...field}*/}
+                    {/*                className="w-[150px]"*/}
+                    {/*                components={{*/}
+                    {/*                    Option: (props) => (*/}
+                    {/*                        <CustomSelectOption*/}
+                    {/*                            variant="phone"*/}
+                    {/*                            {...(props as OptionProps<CountryOption>)}*/}
+                    {/*                        />*/}
+                    {/*                    ),*/}
+                    {/*                    Control: CustomControl,*/}
+                    {/*                }}*/}
+                    {/*                placeholder=""*/}
+                    {/*                value={dialCodeList.filter(*/}
+                    {/*                    (option) =>*/}
+                    {/*                        option.dialCode === field.value,*/}
+                    {/*                )}*/}
+                    {/*                onChange={(option) =>*/}
+                    {/*                    field.onChange(option?.dialCode)*/}
+                    {/*                }*/}
+                    {/*            />*/}
+                    {/*        )}*/}
+                    {/*    />*/}
+                    {/*</FormItem>*/}
                     <FormItem
-                        invalid={
-                            Boolean(errors.phone) ||
-                            Boolean(errors.dialCode)
-                        }
-                    >
-                        <label className="form-label mb-2">Номер телефона</label>
-                        <Controller
-                            name="dialCode"
-                            control={control}
-                            render={({ field }) => (
-                                <Select<CountryOption>
-                                    options={dialCodeList}
-                                    {...field}
-                                    className="w-[150px]"
-                                    components={{
-                                        Option: (props) => (
-                                            <CustomSelectOption
-                                                variant="phone"
-                                                {...(props as OptionProps<CountryOption>)}
-                                            />
-                                        ),
-                                        Control: CustomControl,
-                                    }}
-                                    placeholder=""
-                                    value={dialCodeList.filter(
-                                        (option) =>
-                                            option.dialCode === field.value,
-                                    )}
-                                    onChange={(option) =>
-                                        field.onChange(option?.dialCode)
-                                    }
-                                />
-                            )}
-                        />
-                    </FormItem>
-                    <FormItem
+                        label="Номер телефона"
                         className="w-full"
                         invalid={
                             Boolean(errors.phone) ||

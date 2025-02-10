@@ -42,7 +42,7 @@ const navigationConfig: NavigationTree[] = [
         path: '/user/settings',
         title: 'Мой профиль',
         translateKey: 'nav.singleMenuItem',
-        icon: 'singleMenu',
+        icon: 'profile',
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],
         subMenu: [],
