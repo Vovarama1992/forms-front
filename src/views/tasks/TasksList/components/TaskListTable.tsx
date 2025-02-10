@@ -176,6 +176,17 @@ const TaskListTable = () => {
             {
                 header: 'Название',
                 accessorKey: 'label',
+                cell: (props) => {
+                    const { label, id } = props.row.original
+                        return (
+                            <>
+                                <div className="font-bold heading-text">
+                                    Название: {label}
+                                </div>
+                                <div className="">ID: {id}</div>
+                            </>
+                        )
+                },
             },
             {
                 header: 'Тип',
