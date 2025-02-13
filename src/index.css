@@ -1,1 +1,9 @@
 @import "./assets/styles/app.css";
+/* Отключает автоматический зум на мобильных устройствах */
+input, textarea, select {
+    font-size: 16px !important;
+}
+
+.disable-zoom {
+    touch-action: manipulation;
+}

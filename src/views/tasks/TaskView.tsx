@@ -1,9 +1,7 @@
 import Card from '@/components/ui/Card'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
-import {
-    fetchTaskVote, getTaskById,
-} from '@/services/TaskApiService'
+import { fetchTaskVote, getTaskById } from '@/services/TaskApiService'
 import { FormItem, Radio, Input, Button, Form } from '@/components/ui'
 import { ToastContainer, toast } from 'react-toastify'
 import { Controller, useForm } from 'react-hook-form'
@@ -14,11 +12,10 @@ import type { ITaskCreateResponse } from '@/@types/task'
 import { useSessionUser } from '@/store/authStore'
 import classNames from 'classnames'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet'
 import { shuffleArray } from '@/views/tasks/helpers'
 
 const TaskView = () => {
-
     const [task, setTask] = useState<ITaskCreateResponse>()
     const params = useParams<{ id: string }>()
     const navigate = useNavigate()
@@ -54,43 +51,34 @@ const TaskView = () => {
 
     useEffect(() => {
         if (task?.visible === 'PRIVATE' && !user.id) {
-            setAccess(false)
-        } else {
-            setAccess(true)
+            navigate('/auth')
         }
-    }, [task, user.id]) // Зависимости: task и user.id
+    }, [task, user.id, navigate])
 
     useEffect(() => {
         const fetchData = async () => {
             if (params.id) {
                 try {
-                    const task = await getTaskById(
-                        +params.id,
-                    )
+                    const task = await getTaskById(+params.id)
                     setTask({
                         ...task,
                         options: shuffleArray(task.options),
-                    }) // Обновляем состояние задачи
-
-                    // Обновляем состояние изображений (если нужно)
-                    // setImages(images);
-                } catch (e) {
-                    console.error('Ошибка при получении данных:', e)
+                    })
+                } catch (e: any) {
+                    if (e.response?.status === 401) {
+                        navigate('/auth')
+                    } else {
+                        console.error('Ошибка при получении данных:', e)
+                        toast.error('Ошибка получения задачи')
+                    }
                 }
             }
         }
         fetchData().catch((e) => {
             console.error(e)
             toast.error('Ошибка получения задачи')
-        }) // Вызываем асинхронную функцию
-    }, [params.id])
-
-    // if (task) {
-    //     usePageMetadata(
-    //         task.label,
-    //         task.description
-    //     );
-    // }
+        })
+    }, [params.id, navigate])
 
     const onSubmit = async (values: FormSchema) => {
         try {
@@ -107,28 +95,26 @@ const TaskView = () => {
             })
             window.location.assign('https://opticard.co')
             toast.success('Данные успешно отправлены')
-        } catch (error) {
-            console.error(error)
-            toast.error('Ошибка выполнения запроса')
+        } catch (error: any) {
+            if (error.response?.status === 401) {
+                navigate('/auth')
+            } else {
+                console.error(error)
+                toast.error('Ошибка выполнения запроса')
+            }
         }
     }
 
-
-    const location = useLocation();
-    const regex = /view-task-public/;
+    const location = useLocation()
+    const regex = /view-task-public/
     const taskClass = classNames({
         'm-auto': regex.test(location.pathname),
-        'w-full md:w-3/4': true
-    });
+        'w-full md:w-3/4': true,
+    })
 
     return (
         <>
-            {!isAccess && (
-                <Card>
-                    <h5>Доступ закрыт, необходимо авторизироваться!</h5>
-                </Card>
-            )}
-            {task && isAccess && (
+            {task && (
                 <>
                     <Helmet>
                         <title>{task?.label}</title>
@@ -144,7 +130,7 @@ const TaskView = () => {
                                 {parse(task.description)}
                             </div>
                         </Card>
-                        { task.options.length > 0 && (
+                        {task.options.length > 0 && (
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                 <Card
                                     className="mt-5"
@@ -163,7 +149,10 @@ const TaskView = () => {
                                             name="option"
                                             control={control}
                                             render={({ field }) => (
-                                                <Radio.Group vertical {...field}>
+                                                <Radio.Group
+                                                    vertical
+                                                    {...field}
+                                                >
                                                     {task?.options.map((el) => {
                                                         return (
                                                             <Radio
@@ -174,7 +163,7 @@ const TaskView = () => {
                                                                     key={el.id}
                                                                     header={{
                                                                         content:
-                                                                        el.label,
+                                                                            el.label,
                                                                     }}
                                                                 >
                                                                     <p className="mb-4">
@@ -229,11 +218,14 @@ const TaskView = () => {
                                                     key={input.id}
                                                     label={input.label}
                                                     invalid={Boolean(
-                                                        errors.inputs?.[input.id],
+                                                        errors.inputs?.[
+                                                            input.id
+                                                        ],
                                                     )}
                                                     errorMessage={
-                                                        errors.inputs?.[input.id]
-                                                            ?.message
+                                                        errors.inputs?.[
+                                                            input.id
+                                                        ]?.message
                                                     }
                                                 >
                                                     <Controller

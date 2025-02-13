@@ -4,7 +4,8 @@ import {
     PiBookOpenUserDuotone,
     PiBookBookmarkDuotone,
     PiAcornDuotone,
-    PiBagSimpleDuotone, PiUserCircleDuotone
+    PiBagSimpleDuotone,
+    PiUserCircleDuotone,
 } from 'react-icons/pi'
 import type { JSX } from 'react'
 
