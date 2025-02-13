@@ -65,7 +65,11 @@ const TaskView = () => {
                         options: shuffleArray(task.options),
                     })
                 } catch (e: any) {
-                    if (e.response?.status === 401) {
+                    if (
+                        e.response?.status === 401 ||
+                        (e.response?.status === 400 &&
+                            e.response?.data?.message === 'jwt expired')
+                    ) {
                         navigate('/auth')
                     } else {
                         console.error('Ошибка при получении данных:', e)
@@ -96,7 +100,11 @@ const TaskView = () => {
             window.location.assign('https://opticard.co')
             toast.success('Данные успешно отправлены')
         } catch (error: any) {
-            if (error.response?.status === 401) {
+            if (
+                error.response?.status === 401 ||
+                (error.response?.status === 400 &&
+                    error.response?.data?.message === 'jwt expired')
+            ) {
                 navigate('/auth')
             } else {
                 console.error(error)
