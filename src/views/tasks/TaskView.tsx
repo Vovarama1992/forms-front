@@ -67,10 +67,9 @@ const TaskView = () => {
                 } catch (e: any) {
                     if (
                         e.response?.status === 401 ||
-                        (e.response?.status === 400 &&
-                            e.response?.data?.message === 'jwt expired')
+                        e.response?.status === 400
                     ) {
-                        navigate('/auth')
+                        navigate('/auth') // Редирект на страницу авторизации
                     } else {
                         console.error('Ошибка при получении данных:', e)
                         toast.error('Ошибка получения задачи')
@@ -102,10 +101,9 @@ const TaskView = () => {
         } catch (error: any) {
             if (
                 error.response?.status === 401 ||
-                (error.response?.status === 400 &&
-                    error.response?.data?.message === 'jwt expired')
+                error.response?.status === 400
             ) {
-                navigate('/auth')
+                navigate('/auth') // Редирект на страницу авторизации
             } else {
                 console.error(error)
                 toast.error('Ошибка выполнения запроса')
