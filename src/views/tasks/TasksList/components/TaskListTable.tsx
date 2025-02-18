@@ -3,7 +3,13 @@ import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { useNavigate } from 'react-router-dom'
-import { TbChartHistogram, TbEye, TbLink, TbPencil, TbTrash } from 'react-icons/tb'
+import {
+    TbChartHistogram,
+    TbEye,
+    TbLink,
+    TbPencil,
+    TbTrash,
+} from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { TableQueries } from '@/@types/common'
 import { apiTaskFetch, apiTasksDelete } from '@/services/TaskApiService'
@@ -78,17 +84,13 @@ const ActionColumn = ({
 }
 
 const TaskListTable = () => {
-
-    usePageMetadata(
-        'Список заданий',
-        ''
-    );
+    usePageMetadata('Список заданий', '')
 
     const navigate = useNavigate()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [toDeleteId, setToDeleteId] = useState<number[] | null>(null)
-    const [selectedTasks, setSelectedTasks] = useState<ITaskTableSingle[]>([]);
+    const [selectedTasks, setSelectedTasks] = useState<ITaskTableSingle[]>([])
 
     const handleCancel = () => {
         setDeleteConfirmationOpen(false)
@@ -100,7 +102,7 @@ const TaskListTable = () => {
     }
 
     const handleView = (taskId: string | number) => {
-         navigate(`/view-task/${taskId}`)
+        navigate(`/view-task/${taskId}`)
     }
 
     const handleEdit = (taskId: string | number) => {
@@ -111,34 +113,36 @@ const TaskListTable = () => {
         navigate(`/view-task-statistics/${taskId}`)
     }
 
-    const handleClipard = async (taskId: string | number, visible: 'PRIVATE' | 'PUBLIC') => {
+    const handleClipard = async (
+        taskId: string | number,
+        visible: 'PRIVATE' | 'PUBLIC',
+    ) => {
         // Получаем текущий протокол и хост (например, "https://example.com")
-        const { protocol, host } = window.location;
+        const { protocol, host } = window.location
         // Создаем полный URL для редактирования задачи
-        let fullUrl = `${protocol}//${host}/`;
+        let fullUrl = `${protocol}//${host}/`
         if (visible === 'PRIVATE') {
             fullUrl += `view-task/${taskId}`
         } else {
             fullUrl += `view-task-public/${taskId}`
         }
-        await navigator.clipboard.writeText(fullUrl);
+        await navigator.clipboard.writeText(fullUrl)
 
-        toast.success("Ссылка скопирована")
-
-    };
+        toast.success('Ссылка скопирована')
+    }
 
     const handleConfirmDelete = async () => {
         if (!toDeleteId) return false
         const newProductList = tasks.filter((task) => {
-            return !toDeleteId.includes(task.id);
+            return !toDeleteId.includes(task.id)
         })
         setSelectedTasks([])
-        setTasks(newProductList);
+        setTasks(newProductList)
         try {
             await apiTasksDelete(toDeleteId)
             toast.success('Задание успешно удалено')
         } catch (e) {
-            const error = e as AxiosError<{ message: string }>;
+            const error = e as AxiosError<{ message: string }>
             toast.error(error.message)
         }
         setDeleteConfirmationOpen(false)
@@ -151,24 +155,22 @@ const TaskListTable = () => {
         setDeleteConfirmationOpen(true)
     }
 
-
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [tasks, setTasks] = useState<ITaskTable[]>([]);
+    const [tasks, setTasks] = useState<ITaskTable[]>([])
 
     useEffect(() => {
-
         async function getData() {
             try {
-                const tasks = await apiTaskFetch();
-                setTasks(tasks);
+                const tasks = await apiTaskFetch()
+                setTasks(tasks)
             } catch (e) {
-                const error = e as AxiosError<{ message: string }>;
+                const error = e as AxiosError<{ message: string }>
                 toast.error(error.message)
             } finally {
                 setIsLoading(false)
             }
         }
-        getData();
+        getData()
     }, [])
 
     const columns: ColumnDef<ITaskTable>[] = useMemo(
@@ -178,14 +180,14 @@ const TaskListTable = () => {
                 accessorKey: 'label',
                 cell: (props) => {
                     const { label, id } = props.row.original
-                        return (
-                            <>
-                                <div className="font-bold heading-text">
-                                    {label}
-                                </div>
-                                <div className="">ID: {id}</div>
-                            </>
-                        )
+                    return (
+                        <>
+                            <div className="font-bold heading-text">
+                                {label}
+                            </div>
+                            <div className="">ID: {id}</div>
+                        </>
+                    )
                 },
             },
             {
@@ -196,14 +198,14 @@ const TaskListTable = () => {
                     if (visible === 'PUBLIC') {
                         return (
                             <span className="font-bold heading-text">
-                            Публичный
-                        </span>
+                                Публичный
+                            </span>
                         )
                     } else {
                         return (
                             <span className="font-bold heading-text">
-                            Приватный
-                        </span>
+                                Приватный
+                            </span>
                         )
                     }
                 },
@@ -214,14 +216,13 @@ const TaskListTable = () => {
                 cell: (props) => {
                     const { options } = props.row.original
                     const result = options.reduce((acc, curr, currentIndex) => {
-                        const dash = currentIndex !== options.length - 1 ? '/' : '';
-                        return acc  + curr._count + dash;
+                        const dash =
+                            currentIndex !== options.length - 1 ? '/' : ''
+                        return acc + curr._count + dash
                     }, '')
                     return (
                         <div className="flex flex-col gap-1">
-                            <span className="flex gap-1">
-                                { result }
-                            </span>
+                            <span className="flex gap-1">{result}</span>
                         </div>
                     )
                 },
@@ -232,12 +233,10 @@ const TaskListTable = () => {
                 cell: (props) => {
                     const { options } = props.row.original
                     const result = options.reduce((acc, curr, currentIndex) => {
-                        return acc  + curr._count;
+                        return acc + curr._count
                     }, 0)
                     return (
-                        <span className="font-bold heading-text">
-                            {result}
-                        </span>
+                        <span className="font-bold heading-text">{result}</span>
                     )
                 },
             },
@@ -249,8 +248,15 @@ const TaskListTable = () => {
                         onEdit={() => handleEdit(props.row.original.id)}
                         onDelete={() => handleDelete(props.row.original)}
                         onView={() => handleView(props.row.original.id)}
-                        onCopy={() => handleClipard(props.row.original.id, props.row.original.visible)}
-                        onStats={() => handleNavigateToStats(props.row.original.id)}
+                        onCopy={() =>
+                            handleClipard(
+                                props.row.original.id,
+                                props.row.original.visible,
+                            )
+                        }
+                        onStats={() =>
+                            handleNavigateToStats(props.row.original.id)
+                        }
                     />
                 ),
             },
@@ -260,46 +266,55 @@ const TaskListTable = () => {
     )
 
     const handleSort = (sort: OnSortParam) => {
-        const {order, key} = sort;
-        if (order.toLocaleLowerCase() === 'asc' || order.toLocaleLowerCase() === 'desc') {
-
-            const sortedTasks = [...tasks];
+        const { order, key } = sort
+        if (
+            order.toLocaleLowerCase() === 'asc' ||
+            order.toLocaleLowerCase() === 'desc'
+        ) {
+            const sortedTasks = [...tasks]
 
             sortedTasks.sort((a, b) => {
-                const valueA = a[key];
-                const valueB = b[key];
+                const valueA = a[key]
+                const valueB = b[key]
 
                 if (typeof valueA === 'number' && typeof valueB === 'number') {
-                    return order.toLowerCase() === 'asc' ? valueA - valueB : valueB - valueA;
+                    return order.toLowerCase() === 'asc'
+                        ? valueA - valueB
+                        : valueB - valueA
                 }
 
                 if (typeof valueA === 'string' && typeof valueB === 'string') {
                     return order.toLowerCase() === 'asc'
                         ? valueA.localeCompare(valueB)
-                        : valueB.localeCompare(valueA);
+                        : valueB.localeCompare(valueA)
                 }
-                return 0;
-            });
+                return 0
+            })
             setTasks(sortedTasks)
         }
     }
 
     const handleRowSelect = (checked: boolean, row: ITaskTableSingle) => {
         const prevData = selectedTasks.concat()
-        console.log(selectedTasks, 'prevValue');
+        console.log(selectedTasks, 'prevValue')
         if (checked) {
             setSelectedTasks([...selectedTasks, ...[row]])
-            return selectedTasks;
+            return selectedTasks
         } else {
             if (prevData.some((prevTask) => row.id === prevTask.id)) {
-                  const selectedProducts = prevData.filter((prevTask) => prevTask.id !== row.id)
-                  setSelectedTasks([...selectedProducts]);
+                const selectedProducts = prevData.filter(
+                    (prevTask) => prevTask.id !== row.id,
+                )
+                setSelectedTasks([...selectedProducts])
             }
             setSelectedTasks([...prevData])
         }
     }
 
-    const handleAllRowSelect = (checked: boolean, rows: Row<ITaskTableSingle>[]) => {
+    const handleAllRowSelect = (
+        checked: boolean,
+        rows: Row<ITaskTableSingle>[],
+    ) => {
         if (checked) {
             const originalRows = rows.map((row) => row.original)
             setSelectedTasks(originalRows)
@@ -319,26 +334,30 @@ const TaskListTable = () => {
                 loading={isLoading}
                 isPagination={false}
                 className="task-custom-table"
-/*                checkboxChecked={(row) =>
+                /*                checkboxChecked={(row) =>
                     selectedProduct.some((selected) => selected.id === row.id)
                 }*/
                 onSort={handleSort}
                 onCheckBoxChange={handleRowSelect}
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
             />
-            { selectedTasks.length > 0 && (
+            {selectedTasks.length > 0 && (
                 <div>
-                    <Button variant="solid" className="bg-red-500 hover:bg-red-400" onClick={() => handleMassDelete()}>
+                    <Button
+                        variant="solid"
+                        className="bg-red-500 hover:bg-red-400"
+                        onClick={() => handleMassDelete()}
+                    >
                         Удалить выбранные задания
                     </Button>
                 </div>
-            ) }
+            )}
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
                 type="danger"
                 title="Удаление задания"
-                confirmText={"Удалить"}
-                cancelText={"Отменить"}
+                confirmText={'Удалить'}
+                cancelText={'Отменить'}
                 onClose={handleCancel}
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
@@ -346,10 +365,11 @@ const TaskListTable = () => {
             >
                 <p>
                     {' '}
-                    Вы уверены, что хотите удалить это задание/задания? Это действие нельзя отменить.{' '}
+                    Вы уверены, что хотите удалить это задание/задания? Это
+                    действие нельзя отменить.{' '}
                 </p>
             </ConfirmDialog>
-            <ToastContainer/>
+            <ToastContainer />
         </>
     )
 }

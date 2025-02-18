@@ -11,7 +11,7 @@ export const publicRoutesPages = [
         path: '/view-task-public/:id',
         component: lazy(() => import('@/views/tasks/TaskView')),
         authority: [],
-    }
+    },
 ]
 
 export const protectedRoutes: Routes = [
@@ -50,6 +50,12 @@ export const protectedRoutes: Routes = [
         path: '/view-task-statistics/:label',
         component: lazy(() => import('@/views/tasks/TaskStats')),
         authority: [],
+    },
+    {
+        key: 'privacyPage',
+        path: '/privacy',
+        component: lazy(() => import('@/views/privacy/page')), // Укажите путь к компоненту
+        authority: [], // Укажите необходимые права доступа, если требуется
     },
     ...othersRoute,
 ]

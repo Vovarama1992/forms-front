@@ -10,20 +10,15 @@ import FormInputs from '@/views/tasks/components/FormQuestions/FormInputs'
 import { apiTaskCreate, apiTaskImageSave } from '@/services/TaskApiService'
 import { FormSchema } from '@/views/tasks/types/types'
 import { defaultValues, validationSchema } from '@/views/tasks/consts'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify'
 import { Radio } from '@/components/ui'
 import { usePageMetadata } from '@/views/tasks/helpers'
 import { useNavigate } from 'react-router-dom'
 
-
 const TaskCreateView = () => {
-
     const navigate = useNavigate()
 
-    usePageMetadata(
-        'Создать задание',
-        ''
-    );
+    usePageMetadata('Создать задание', '')
 
     const {
         control,
@@ -35,7 +30,7 @@ const TaskCreateView = () => {
         formState: { errors },
     } = useForm({
         defaultValues,
-        resolver: zodResolver(validationSchema)
+        resolver: zodResolver(validationSchema),
     })
 
     const onSubmit = async (values: FormSchema) => {
@@ -43,27 +38,33 @@ const TaskCreateView = () => {
             const result = await apiTaskCreate({
                 description: values.description,
                 label: values.label,
-                options: [
-                    ...values.customQuestions,
-                ],
+                options: [...values.customQuestions],
                 inputs: [
-                    ...values.inputs.filter(el => el.value).flatMap(obj => Object.values(obj))
+                    ...values.inputs
+                        .filter((el) => el.value)
+                        .flatMap((obj) => Object.values(obj)),
                 ],
                 visible: values.visible,
-            });
-            const { id:taskId } = result;
+            })
+            const { id: taskId } = result
             if (taskId) {
-                result.options.forEach(option => {
-                    const { label } = option;
-                    const existOption = values.customQuestions.find(el => el.label === label);
+                result.options.forEach((option) => {
+                    const { label } = option
+                    const existOption = values.customQuestions.find(
+                        (el) => el.label === label,
+                    )
                     if (existOption?.image) {
                         const formData = new FormData()
-                        existOption?.image.forEach(imageInner => {
+                        existOption?.image.forEach((imageInner) => {
                             formData.append('file', imageInner)
                         })
-                        apiTaskImageSave(formData, taskId.toString(), option.id.toString()).catch(e => {
-                            toast.error(e.response.data.message);
-                        });
+                        apiTaskImageSave(
+                            formData,
+                            taskId.toString(),
+                            option.id.toString(),
+                        ).catch((e) => {
+                            toast.error(e.response.data.message)
+                        })
                     }
                 })
             }
@@ -71,7 +72,7 @@ const TaskCreateView = () => {
             reset({ ...defaultValues })
             navigate('/tasks-view-list')
         } catch (e) {
-            toast.error("Произошла ошибка")
+            toast.error('Произошла ошибка')
         }
     }
 
@@ -114,8 +115,10 @@ const TaskCreateView = () => {
                                     render={({ field }) => (
                                         <RichTextEditor
                                             content={field.value}
-                                            invalid={Boolean(errors.description)}
-                                            onChange={({html}) => {
+                                            invalid={Boolean(
+                                                errors.description,
+                                            )}
+                                            onChange={({ html }) => {
                                                 field.onChange(html)
                                             }}
                                         />
@@ -133,12 +136,16 @@ const TaskCreateView = () => {
                                 <Controller
                                     name="visible"
                                     control={control}
-                                    render={({ field }) =>
+                                    render={({ field }) => (
                                         <Radio.Group {...field}>
-                                            <Radio value={'PUBLIC'}>Публичный</Radio>
-                                            <Radio value={'PRIVATE'}>Приватный</Radio>
+                                            <Radio value={'PUBLIC'}>
+                                                Публичный
+                                            </Radio>
+                                            <Radio value={'PRIVATE'}>
+                                                Приватный
+                                            </Radio>
                                         </Radio.Group>
-                                    }
+                                    )}
                                 />
                             </FormItem>
                         </Card>
@@ -177,10 +184,9 @@ const TaskCreateView = () => {
                     </div>
                 </div>
             </Form>
-            <ToastContainer/>
+            <ToastContainer />
         </>
     )
 }
 
 export default TaskCreateView
-

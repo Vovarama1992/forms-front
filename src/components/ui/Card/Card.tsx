@@ -1,8 +1,11 @@
+import * as React from 'react'
 import classNames from 'classnames'
 import { useConfig } from '../ConfigProvider'
+import { cn } from '@/lib/utils' // Используем cn для объединения классов
 import type { CommonProps } from '../@types/common'
 import type { ReactNode, ComponentPropsWithRef, MouseEvent, Ref } from 'react'
 
+// Типы для заголовка и подвала карточки
 type CardHeader = {
     content?: string | ReactNode
     className?: string
@@ -16,6 +19,7 @@ type CardFooter = {
     bordered?: boolean
 }
 
+// Интерфейс для пропсов карточки
 export interface CardProps
     extends CommonProps,
         Omit<ComponentPropsWithRef<'div'>, 'onClick'> {
@@ -28,15 +32,8 @@ export interface CardProps
     onClick?: (e: MouseEvent<HTMLDivElement>) => void
 }
 
-const defaultHeaderConfig: CardHeader = {
-    bordered: true,
-}
-
-const defaultFooterConfig: CardHeader = {
-    bordered: true,
-}
-
-const Card = (props: CardProps) => {
+// Компонент Card
+const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
     const { ui } = useConfig()
 
     const {
@@ -47,40 +44,28 @@ const Card = (props: CardProps) => {
         bordered = ui?.card?.cardBordered ?? true,
         header = {},
         footer = {},
-        ref,
         onClick,
         ...rest
     } = props
 
     const headerProps = {
-        ...defaultHeaderConfig,
+        bordered: true,
         ...header,
     }
 
     const footerProps = {
-        ...defaultFooterConfig,
+        bordered: true,
         ...footer,
     }
 
     const cardClass = classNames(
-        'card',
+        'rounded-lg border bg-card text-card-foreground shadow-sm',
         className,
-        bordered ? `card-border` : `card-shadow`,
+        bordered ? 'card-border' : 'card-shadow',
         clickable && 'cursor-pointer user-select-none',
     )
 
-    const cardBodyClasss = classNames('card-body', bodyClass)
-    const cardHeaderClass = classNames(
-        'card-header',
-        headerProps.bordered ? 'card-header-border' : null,
-        headerProps.extra ? 'card-header-extra' : null,
-        headerProps.className,
-    )
-    const cardFooterClass = classNames(
-        'card-footer',
-        footerProps.bordered && `card-footer-border`,
-        footerProps.className,
-    )
+    const cardBodyClass = classNames('card-body', bodyClass)
 
     const renderHeader = () => {
         if (typeof headerProps.content === 'string') {
@@ -102,17 +87,89 @@ const Card = (props: CardProps) => {
             {...rest}
         >
             {headerProps.content && (
-                <div className={cardHeaderClass}>
+                <div
+                    className={classNames('card-header', headerProps.className)}
+                >
                     {renderHeader()}
                     {headerProps.extra && <span>{headerProps.extra}</span>}
                 </div>
             )}
-            <div className={cardBodyClasss}>{children}</div>
+            <div className={cardBodyClass}>{children}</div>
             {footerProps.content && (
-                <div className={cardFooterClass}>{footerProps.content}</div>
+                <div
+                    className={classNames('card-footer', footerProps.className)}
+                >
+                    {footerProps.content}
+                </div>
             )}
         </div>
     )
-}
+})
+Card.displayName = 'Card'
 
-export default Card
+// Компонент CardHeader
+const CardHeader = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <div
+        ref={ref}
+        className={cn('flex flex-col space-y-1.5 p-6', className)}
+        {...props}
+    />
+))
+CardHeader.displayName = 'CardHeader'
+
+// Компонент CardTitle
+const CardTitle = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <div
+        ref={ref}
+        className={cn(
+            'text-2xl font-semibold leading-none tracking-tight',
+            className,
+        )}
+        {...props}
+    />
+))
+CardTitle.displayName = 'CardTitle'
+
+// Компонент CardDescription
+const CardDescription = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <div
+        ref={ref}
+        className={cn('text-sm text-muted-foreground', className)}
+        {...props}
+    />
+))
+CardDescription.displayName = 'CardDescription'
+
+// Компонент CardContent
+const CardContent = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+))
+CardContent.displayName = 'CardContent'
+
+// Компонент CardFooter
+const CardFooter = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <div
+        ref={ref}
+        className={cn('flex items-center p-6 pt-0', className)}
+        {...props}
+    />
+))
+CardFooter.displayName = 'CardFooter'
+
+// Экспортируем все компоненты карточки
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

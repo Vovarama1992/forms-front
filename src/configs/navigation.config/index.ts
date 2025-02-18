@@ -47,6 +47,16 @@ const navigationConfig: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
+    {
+        key: 'Privacy',
+        path: '/privacy',
+        title: 'Политика конфиденциальности',
+        translateKey: 'nav.privacy',
+        icon: 'groupSingleMenu',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
     /** Example purpose only, please remove */
     // {
     //     key: 'singleMenuItem',
