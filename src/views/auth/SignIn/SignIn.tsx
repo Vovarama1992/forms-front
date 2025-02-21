@@ -27,7 +27,7 @@ export const SignInBase = ({
                     type="streamline"
                     mode={mode}
                     imgClass="mx-auto"
-                    logoWidth={60}
+                    logoWidth={160}
                 />
             </div>
             <div className="mb-10">
@@ -51,7 +51,7 @@ export const SignInBase = ({
                             className="font-semibold heading-text mt-2 underline"
                             themeColor={false}
                         >
-                           Забыли пароль
+                            Забыли пароль
                         </ActionLink>
                     </div>
                 }
