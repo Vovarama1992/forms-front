@@ -20,15 +20,13 @@ type AuthAction = {
 }
 
 const getPersistStorage = () => {
-    if (appConfig.accessTokenPersistStrategy === 'localStorage') {
-        return localStorage
+    const storages = {
+        localStorage: localStorage,
+        sessionStorage: sessionStorage,
+        cookies: cookiesStorage,
     }
 
-    if (appConfig.accessTokenPersistStrategy === 'sessionStorage') {
-        return sessionStorage
-    }
-
-    return cookiesStorage
+    return storages[appConfig.accessTokenPersistStrategy]
 }
 
 const initialState: AuthState = {
