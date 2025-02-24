@@ -14,14 +14,14 @@ import { ToastContainer, toast } from 'react-toastify'
 import { Radio } from '@/components/ui'
 import { usePageMetadata } from '@/views/tasks/helpers'
 import { useNavigate } from 'react-router-dom'
-import { RespondentCount } from '@/views/tasks/components/RespondentCount/respondent-count' // Импортируем компонент
+// import { RespondentCount } from '@/views/tasks/components/RespondentCount/respondent-count' // Импортируем компонент
 import { useSessionUser } from '@/store/authStore' // Для получения баланса пользователя
 import { useState } from 'react'
 
 const TaskCreateView = () => {
     const navigate = useNavigate()
     const user = useSessionUser((state) => state.user) // Получаем данные пользователя
-    const [respondentCount, setRespondentCount] = useState(20) // Состояние для количества респондентов
+    // const [respondentCount, setRespondentCount] = useState(20) // Состояние для количества респондентов
 
     usePageMetadata('Создать задание', '')
 
@@ -39,12 +39,12 @@ const TaskCreateView = () => {
     })
 
     const onSubmit = async (values: FormSchema) => {
-        const totalCost = respondentCount * 8 // Стоимость за выбранное количество респондентов
+        // const totalCost = respondentCount * 8 // Стоимость за выбранное количество респондентов
 
-        if (user.balance < totalCost) {
-            toast.error('Недостаточно средств на балансе')
-            return
-        }
+        // if (user.balance < totalCost) {
+        //     toast.error('Недостаточно средств на балансе')
+        //     return
+        // }
 
         try {
             const result = await apiTaskCreate({
@@ -83,9 +83,9 @@ const TaskCreateView = () => {
                 })
             }
 
-            // Списание средств с баланса
-            const newBalance = user.balance - totalCost
-            // Здесь нужно обновить баланс пользователя в хранилище или API
+            // // Списание средств с баланса
+            // const newBalance = user.balance - totalCost
+            // // Здесь нужно обновить баланс пользователя в хранилище или API
 
             toast.success('Задание успешно создано')
             reset({ ...defaultValues })
@@ -197,12 +197,12 @@ const TaskCreateView = () => {
                         </Card>
                     </div>
                     {/* Добавляем компонент для выбора количества респондентов */}
-                    <Card>
+                    {/* <Card>
                         <RespondentCount
                             userBalance={user.balance}
                             onSelect={(count) => setRespondentCount(count)}
                         />
-                    </Card>
+                    </Card> */}
                     <div className="grid-cols">
                         <Button className="mt-2" type="submit" variant="solid">
                             Создать
