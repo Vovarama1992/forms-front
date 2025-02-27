@@ -1,5 +1,5 @@
 import { Activity, FileText, Users } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/Card'
 
 const stats = [
     {

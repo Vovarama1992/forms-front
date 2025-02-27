@@ -107,6 +107,7 @@ const TaskStatsView = () => {
     const pollData = task
         ? {
               id: task.taskDetails.label,
+              totalVotes:task.totalVotes,
               status: {
                   complete: true, // Предположим, что опрос завершен
                   totalResponses: task.optionsStatistics.reduce(

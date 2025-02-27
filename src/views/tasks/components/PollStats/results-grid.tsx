@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/Card'
 import { Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -31,25 +31,29 @@ export function ResultsGrid({ options }: ResultsGridProps) {
                     )}
                     <div className="p-6">
                         <div className="mb-6">
-                            <h3 className="text-xl font-semibold">
+                            <h3 className="text-xl font-semibold ">
                                 {option.title}
                             </h3>
                             <div className="mt-2 flex items-center gap-2">
-                                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium mr-3 ml-2">
                                     {option.id}
                                 </span>
                                 <span className="text-sm text-muted-foreground">
-                                    {option.votes}{' '}
+                                    {option.votes} {' '}
                                     {option.votes === 1
                                         ? 'голос'
-                                        : option.votes < 5
-                                          ? 'голоса'
-                                          : 'голосов'}
+                                        : (option.votes === 0 || (option.votes % 10 >= 5 && option.votes % 10 <= 9) || (option.votes % 100 >= 11 && option.votes % 100 <= 19))
+                                            ? 'голосов'
+                                            : (option.votes % 10 >= 2 && option.votes % 10 <= 4)
+                                                ? 'голоса'
+                                                : 'голос' //This last 'голос' should never be reached, added for completeness/safety
+                                    }
                                 </span>
                             </div>
                         </div>
 
                         <div className="relative">
+
                             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                                 <div
                                     className={cn(
@@ -58,11 +62,13 @@ export function ResultsGrid({ options }: ResultsGridProps) {
                                             ? 'bg-emerald-500'
                                             : 'bg-blue-500',
                                     )}
-                                    style={{ width: `${option.percentage}%` }}
+                                    style={{ width: `${isNaN(option.percentage) || option.percentage === null || option.percentage === undefined ? 0 : option.percentage}%` }}
                                 />
                             </div>
+
+
                             <span className="absolute right-0 -top-6 text-2xl font-semibold">
-                                {option.percentage}%
+                              {isNaN(option.percentage) || option.percentage === null || option.percentage === undefined ? '0%' : `${option.percentage}%`}
                             </span>
                         </div>
                     </div>

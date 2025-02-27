@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card'
 import { RichTextEditor } from '@/components/shared'
 import FormQuestions from '@/views/tasks/components/FormQuestions/FormQuestions'
 import FormInputs from '@/views/tasks/components/FormQuestions/FormInputs'
+import RespondentSlider from '@/views/tasks/components/FormQuestions/RespondentSlider'
 import { apiTaskCreate, apiTaskImageSave } from '@/services/TaskApiService'
 import { FormSchema } from '@/views/tasks/types/types'
 import { defaultValues, validationSchema } from '@/views/tasks/consts'
@@ -21,8 +22,7 @@ import { useState } from 'react'
 const TaskCreateView = () => {
     const navigate = useNavigate()
     const user = useSessionUser((state) => state.user) // Получаем данные пользователя
-    // const [respondentCount, setRespondentCount] = useState(20) // Состояние для количества респондентов
-
+    const [expectedVotes, setExpectedVotes] = useState(20);
     usePageMetadata('Создать задание', '')
 
     const {
@@ -39,13 +39,6 @@ const TaskCreateView = () => {
     })
 
     const onSubmit = async (values: FormSchema) => {
-        // const totalCost = respondentCount * 8 // Стоимость за выбранное количество респондентов
-
-        // if (user.balance < totalCost) {
-        //     toast.error('Недостаточно средств на балансе')
-        //     return
-        // }
-
         try {
             const result = await apiTaskCreate({
                 description: values.description,
@@ -57,43 +50,50 @@ const TaskCreateView = () => {
                         .flatMap((obj) => Object.values(obj)),
                 ],
                 visible: values.visible,
-                respondentCount, // Добавляем количество респондентов в запрос
-            })
+                expectedVotes: expectedVotes, // Добавляем количество респондентов в запрос
+            });
 
-            const { id: taskId } = result
+            const { id: taskId } = result;
             if (taskId) {
                 result.options.forEach((option) => {
-                    const { label } = option
+                    const { label } = option;
                     const existOption = values.customQuestions.find(
                         (el) => el.label === label,
-                    )
+                    );
                     if (existOption?.image) {
-                        const formData = new FormData()
+                        const formData = new FormData();
                         existOption?.image.forEach((imageInner) => {
-                            formData.append('file', imageInner)
-                        })
+                            formData.append('file', imageInner);
+                        });
                         apiTaskImageSave(
                             formData,
                             taskId.toString(),
                             option.id.toString(),
                         ).catch((e) => {
-                            toast.error(e.response.data.message)
-                        })
+                            // Обработка ошибок при сохранении изображений
+                            if (e.response && e.response.data && e.response.data.message) {
+                                toast.error(e.response.data.message);
+                            } else {
+                                toast.error("Произошла ошибка при загрузке изображения.");
+                            }
+                        });
                     }
-                })
+                });
             }
 
-            // // Списание средств с баланса
-            // const newBalance = user.balance - totalCost
-            // // Здесь нужно обновить баланс пользователя в хранилище или API
 
-            toast.success('Задание успешно создано')
-            reset({ ...defaultValues })
-            navigate('/tasks-view-list')
-        } catch (e) {
-            toast.error('Произошла ошибка')
+            toast.success('Задание успешно создано');
+            reset({ ...defaultValues });
+            navigate('/tasks-view-list');
+        } catch (e: any) { // Явно указываем тип `any`
+            if (e.response && e.response.data && e.response.data.message) {
+                toast.error(e.response.data.message);  // Показываем сообщение из ответа сервера
+            } else {
+                // Общая ошибка, если нет подробного сообщения
+                toast.error('Произошла ошибка при создании задания');
+            }
         }
-    }
+    };
 
     return (
         <>
@@ -194,6 +194,14 @@ const TaskCreateView = () => {
                                     setValue,
                                 }}
                             />
+                        </Card>
+                        <Card className="mb-4 mt-2">
+                            <h5 className="mb-4">Количество респондентов</h5>
+                            <RespondentSlider
+                                value={expectedVotes}
+                                onChange={setExpectedVotes}
+                            />
+                            <p className='text-center'>Выбранное количество: {expectedVotes}</p>
                         </Card>
                     </div>
                     {/* Добавляем компонент для выбора количества респондентов */}

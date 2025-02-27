@@ -5,6 +5,7 @@ import { FeedbackSection } from './feedback-section'
 interface PollResultsProps {
     data: {
         id: string
+        totalVotes:number
         status: {
             complete: boolean
             totalResponses: number
@@ -20,15 +21,11 @@ interface PollResultsProps {
 }
 
 export function PollResults({ data }: PollResultsProps) {
-    const totalVotes = data.options.reduce(
-        (sum, option) => sum + option.votes,
-        0,
-    )
 
     // Вычисляем проценты и определяем победителя
     const optionsWithStats = data.options.map((option) => ({
         ...option,
-        percentage: Math.round((option.votes / totalVotes) * 100),
+        percentage: Math.round((option.votes / data.totalVotes) * 100),
     }))
 
     const winner = optionsWithStats.reduce((prev, current) =>

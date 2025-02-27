@@ -53,6 +53,7 @@
     "lucide-react": "^0.475.0",
     "marked": "^15.0.3",
     "next": "^15.1.7",
+    "rc-slider": "^11.1.8",
     "react": "19.0.0",
     "react-apexcharts": "^1.7.0",
     "react-csv": "^2.2.2",

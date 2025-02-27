@@ -1,5 +1,5 @@
 import { CheckCircle2, Clock } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/Card'
 
 interface PollStatusProps {
     totalResponses: number
