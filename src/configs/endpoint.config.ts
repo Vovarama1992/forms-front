@@ -16,12 +16,16 @@ const endpointConfig = {
         getByLabel: '/tasks/by-label',
         getImages: '/images/option-image',
         statistics: '/tasks/statistics',
+        globalStat: '/users/tasks-stats',
     },
     users: {
         userProfile: 'users/me',
         userProfileUpdate: 'users/update',
         userAvatarUpdate: 'images/upload-avatar-image',
         userPasswordUpdate: 'users/update-password',
+    },
+    ai: {
+        aiResponse: ''
     }
 }
 

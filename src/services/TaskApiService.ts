@@ -173,3 +173,14 @@ export async function fetchTaskStatistics(
         },
     })
 }
+
+export async function fetchTaskGlobalStatistics(
+): Promise<IResponseStatistic> {
+    return ApiService.fetchDataWithAxios({
+        url: `${endpointConfig.tasks.globalStat}`,
+        method: 'get',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
+    })
+}

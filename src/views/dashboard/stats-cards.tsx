@@ -1,34 +1,60 @@
-import { Activity, FileText, Users } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/Card'
+import {Activity, FileText, Users} from 'lucide-react'
+import {Card, CardContent} from '@/components/ui/Card'
+import {useEffect, useState} from "react";
+import {fetchTaskGlobalStatistics} from "@/services/TaskApiService";
+import {toast} from "react-toastify";
 
-const stats = [
-    {
-        title: 'Всего заданий',
-        value: '127',
-        description: 'За все время',
-        icon: FileText,
-        color: 'bg-blue-50',
-        iconColor: 'text-blue-600',
-    },
-    {
-        title: 'Активные задания',
-        value: '23',
-        description: 'В процессе',
-        icon: Activity,
-        color: 'bg-green-50',
-        iconColor: 'text-green-600',
-    },
-    {
-        title: 'Всего голосов',
-        value: '12,234',
-        description: 'По всем заданиям',
-        icon: Users,
-        color: 'bg-purple-50',
-        iconColor: 'text-purple-600',
-    },
-]
+export function StatsCards({ params }) {
+    const [globalStats, setGlobalStats] = useState({
+        totalCreatedTasks: 0,
+        tasksNotReachedExpectedVotes: 0,
+        totalCurrentVotes: 0,
+    });
 
-export function StatsCards() {
+    // Получение общей статистики
+    useEffect(() => {
+        async function fetchGlobalStats() {
+            try {
+                const response = await fetchTaskGlobalStatistics();
+
+                setGlobalStats(response);
+            } catch (error) {
+                console.error(error);
+                toast.error('Ошибка получения общей статистики');
+            }
+        }
+        fetchGlobalStats();
+    }, []);
+
+    const stats = [
+        {
+            title: 'Всего заданий',
+            value: globalStats.totalCreatedTasks,
+            description: 'За все время',
+            icon: FileText,
+            color: 'bg-blue-50',
+            iconColor: 'text-blue-600',
+        },
+        {
+            title: 'Активные задания',
+            value: globalStats.tasksNotReachedExpectedVotes,
+            description: 'В процессе',
+            icon: Activity,
+            color: 'bg-green-50',
+            iconColor: 'text-green-600',
+        },
+        {
+            title: 'Всего голосов',
+            value: globalStats.totalCurrentVotes,
+            description: 'По всем заданиям',
+            icon: Users,
+            color: 'bg-purple-50',
+            iconColor: 'text-purple-600',
+        },
+    ];
+
+
+
     return (
         <div className="grid gap-4 md:grid-cols-3">
             {stats.map((stat) => (
@@ -56,5 +82,5 @@ export function StatsCards() {
                 </Card>
             ))}
         </div>
-    )
+    );
 }

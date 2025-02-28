@@ -1,19 +1,21 @@
 import Card from '@/components/ui/Card'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { fetchTaskStatistics } from '@/services/TaskApiService'
+import {fetchTaskStatistics, getTaskById} from '@/services/TaskApiService'
 import { toast, ToastContainer } from 'react-toastify'
 import { IResponseStatistic } from '@/@types/task'
 import parse from 'html-react-parser'
 import Accordion from '@/components/shared/Accordion/Accordion'
 import { useSessionUser } from '@/store/authStore'
 import { usePageMetadata } from '@/views/tasks/helpers'
-import { PollResults } from '@/views/tasks/components/PollStats/poll-results' // Импортируем PollResults
+import { PollResults } from '@/views/tasks/components/PollStats/poll-results'
+import {toInteger} from "lodash"; // Импортируем PollResults
 
 const TaskStatsView = () => {
     usePageMetadata('Статистика задания', '')
 
     const [task, setTask] = useState<IResponseStatistic | null>(null)
+    const [taskAllDetails, setTaskAllDetails] = useState<IResponseStatistic | null>(null)
     const params = useParams<{ label: string }>()
     const user = useSessionUser((state) => state.user)
 
@@ -23,6 +25,24 @@ const TaskStatsView = () => {
                 const taskStats = await fetchTaskStatistics(params.label)
                 if (taskStats.taskDetails) {
                     setTask(taskStats)
+                }
+            } else {
+                toast.error('Данные не получены')
+            }
+        }
+
+        fetchTaskData().catch((e) => {
+            console.error(e)
+            toast.error('Ошибка получения даннных')
+        })
+    }, [params.label])
+
+    useEffect(() => {
+        async function fetchTaskData() {
+            if (params.label) {
+                const taskStatsDetails = await getTaskById(toInteger(params.label))
+                if (taskStatsDetails) {
+                    setTaskAllDetails(taskStatsDetails)
                 }
             } else {
                 toast.error('Данные не получены')
@@ -108,6 +128,7 @@ const TaskStatsView = () => {
         ? {
               id: task.taskDetails.label,
               totalVotes:task.totalVotes,
+              AIReport: taskAllDetails?.AIReport ?? null,
               status: {
                   complete: true, // Предположим, что опрос завершен
                   totalResponses: task.optionsStatistics.reduce(

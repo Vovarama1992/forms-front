@@ -68,6 +68,7 @@ export interface TaskDetails {
 }
 
 export interface IResponseStatistic {
+    AIReport: string | null;
     optionsStatistics: OptionsStatistic[]
     inputsStatistics: {
         inputLabel: string

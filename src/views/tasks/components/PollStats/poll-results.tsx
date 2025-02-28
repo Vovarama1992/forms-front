@@ -1,11 +1,13 @@
 import { PollStatus } from './poll-status'
 import { ResultsGrid } from './results-grid'
 import { FeedbackSection } from './feedback-section'
+import {AIAnalysis} from "@/views/tasks/components/PollStats/ai-analysis";
 
 interface PollResultsProps {
     data: {
         id: string
         totalVotes:number
+        AIReport:string
         status: {
             complete: boolean
             totalResponses: number
@@ -45,6 +47,10 @@ export function PollResults({ data }: PollResultsProps) {
                     ...option,
                     isWinner: option.id === winner.id,
                 }))}
+            />
+
+            <AIAnalysis
+             AIReport={data.AIReport}
             />
 
             <FeedbackSection

@@ -1,10 +1,10 @@
 import { FileText, Plus } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button'
 import { StatsCards } from './stats-cards'
 import { TasksOverview } from './tasks-overview'
-import { RecentTasks } from './recent-tasks'
+import {RecentTasks} from './recent-tasks'
 
 export default function DashboardPage() {
     return (
@@ -19,10 +19,10 @@ export default function DashboardPage() {
                         {/* </Link> */}
                     </Button>
                     <Button>
-                        {/* <Link href="/tasks/new"> */}
-                        <Plus className="mr-2 h-4 w-4" />
-                        Создать задание
-                        {/* </Link> */}
+                         <Link to="/create-task">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Создать задание
+                         </Link>
                     </Button>
                 </div>
             </div>

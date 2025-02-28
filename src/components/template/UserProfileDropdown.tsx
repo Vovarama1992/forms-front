@@ -23,6 +23,7 @@ const _UserDropdown = () => {
 
     const handleSignOut = () => {
         signOut()
+        localStorage.setItem('logout', Date.now().toString());
     }
 
     const avatarProps = {
