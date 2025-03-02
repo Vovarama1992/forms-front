@@ -8,6 +8,8 @@ interface PollResultsProps {
         id: string
         totalVotes:number
         AIReport:string
+        expectedVotes:number
+        currentVotes:number
         status: {
             complete: boolean
             totalResponses: number
@@ -34,12 +36,15 @@ export function PollResults({ data }: PollResultsProps) {
         current.percentage > prev.percentage ? current : prev,
     )
 
+
+    const isComplete = data.currentVotes == data.expectedVotes;
+
     return (
         <div className="space-y-8">
             <PollStatus
                 totalResponses={data.status.totalResponses}
                 duration={data.status.duration}
-                isComplete={data.status.complete}
+                isComplete={isComplete}
             />
 
             <ResultsGrid

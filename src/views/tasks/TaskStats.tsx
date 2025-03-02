@@ -128,6 +128,8 @@ const TaskStatsView = () => {
         ? {
               id: task.taskDetails.label,
               totalVotes:task.totalVotes,
+              expectedVotes:taskAllDetails.expectedVotes,
+              currentVotes:taskAllDetails.currentVotes,
               AIReport: taskAllDetails?.AIReport ?? null,
               status: {
                   complete: true, // Предположим, что опрос завершен

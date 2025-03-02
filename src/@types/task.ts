@@ -76,6 +76,8 @@ export interface IResponseStatistic {
     }[]
     taskDetails: TaskDetails
     totalVotes: number
+    currentVotes: number
+    expectedVotes: number
     userId?: string | number
 }
 

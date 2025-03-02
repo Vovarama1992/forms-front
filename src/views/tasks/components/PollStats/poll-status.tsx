@@ -19,7 +19,7 @@ export function PollStatus({
                     {isComplete ? (
                         <CheckCircle2 className="h-6 w-6 text-emerald-700" />
                     ) : (
-                        <Clock className="h-6 w-6 text-emerald-700" />
+                        <Clock className="h-6 w-6 text-red-700" />
                     )}
                 </div>
                 <div>
