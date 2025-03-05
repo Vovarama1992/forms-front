@@ -31,6 +31,8 @@ interface PollResultsProps {
 }
 
 export function PollResults({ data, task }: PollResultsProps) {
+    console.log("data");
+    console.log(data);
     const { label } = useParams<{ label: number }>(); // Указываем тип параметра
     // Вычисляем проценты и определяем победителя
     const optionsWithStats = data.options.map((option) => ({
