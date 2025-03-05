@@ -4,6 +4,9 @@ import { FeedbackSection } from './feedback-section'
 import {AIAnalysis} from "@/views/tasks/components/PollStats/ai-analysis";
 import Card from "../../../../components/ui/Card";
 import Accordion from "@/components/shared/Accordion/Accordion";
+import {Button} from "react-scroll";
+import {apiTaskCreate, fetchTestGenerateDpt, fetchTestGenerateGpt} from "@/services/TaskApiService";
+import {useParams} from "react-router";
 
 interface PollResultsProps {
     data: {
@@ -28,7 +31,7 @@ interface PollResultsProps {
 }
 
 export function PollResults({ data, task }: PollResultsProps) {
-    console.log(task);
+    const { label } = useParams<{ label: number }>(); // Указываем тип параметра
     // Вычисляем проценты и определяем победителя
     const optionsWithStats = data.options.map((option) => ({
         ...option,
@@ -39,6 +42,30 @@ export function PollResults({ data, task }: PollResultsProps) {
         current.percentage > prev.percentage ? current : prev,
     )
 
+    const getReportAi = async () => {
+
+        try {
+            const result = await fetchTestGenerateGpt(label);
+            return  false;
+
+            if (!response.ok) {
+                // Обработка ошибок, когда сервер вернул статус не 2xx
+                const errorText = await response.text(); // Или response.json(), если ошибка в JSON
+                throw new Error(`Failed to generate report: ${response.status} - ${errorText}`);
+            }
+
+            const reportData = await response.json(); //  Парсим JSON-ответ, если сервер возвращает JSON.
+            //  Если сервер не возвращает JSON, а, например, просто текст, то:
+            // const reportData = await response.text();
+
+            return reportData; // Возвращаем полученные данные
+
+        } catch (error) {
+            // Обработка ошибок, связанных с самим запросом (сетевые проблемы, CORS, и т.д.)
+            console.error("Error generating report:", error);
+            throw error; //  Перебрасываем ошибку, чтобы ее можно было обработать выше.  Или возвращаем какое-то значение по умолчанию/ошибку.
+        }
+    };
 
     const isComplete = data.currentVotes == data.expectedVotes;
 
@@ -94,6 +121,15 @@ export function PollResults({ data, task }: PollResultsProps) {
             <AIAnalysis
                 AIReport={data.AIReport}
             />
+
+            <button
+                className="bg-amber-300 hover:bg-amber-400 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onClick={() => getReportAi()}
+                type="button"
+            >
+                Получить отчет АИ
+            </button>
+
         </div>
     )
 }

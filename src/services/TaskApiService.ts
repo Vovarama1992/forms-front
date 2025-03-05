@@ -184,3 +184,18 @@ export async function fetchTaskGlobalStatistics(
         },
     })
 }
+export async function fetchTestGenerateGpt(
+    taskId: number | undefined,
+): Promise<any> {
+    if (taskId === undefined) {
+        throw new Error("taskId is required for report generation.");
+    }
+
+    return ApiService.fetchDataWithAxios({
+        url: `/tasks/${taskId}/generate-report`,
+        method: 'post',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+        },
+    });
+}
