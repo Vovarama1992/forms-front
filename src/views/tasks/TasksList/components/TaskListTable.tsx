@@ -18,6 +18,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import { Button } from '@/components/ui'
 import { AxiosError } from 'axios'
 import { usePageMetadata } from '@/views/tasks/helpers'
+import {useTasks} from "@/store/TasksContext";
 
 const ActionColumn = ({
     onEdit,
@@ -156,7 +157,7 @@ const TaskListTable = () => {
     }
 
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [tasks, setTasks] = useState<ITaskTable[]>([])
+    const { tasks, setTasks } = useTasks()
 
     useEffect(() => {
         async function getData() {
@@ -322,7 +323,7 @@ const TaskListTable = () => {
             setSelectedTasks([])
         }
     }
-
+    console.log(tasks);
     return (
         <>
             <DataTable

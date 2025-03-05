@@ -1,18 +1,51 @@
-'use client'
+import {useTasks} from "@/store/TasksContext";
+import { useMemo } from 'react'
+import {Card} from "@/components/ui";
+import {CardContent, CardHeader, CardTitle} from "@/components/ui/Card";
+import {Bar, BarChart, ResponsiveContainer, XAxis, YAxis} from "recharts";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
-
-const data = [
-    { name: 'Янв', total: 12 },
-    { name: 'Фев', total: 15 },
-    { name: 'Мар', total: 23 },
-    { name: 'Апр', total: 18 },
-    { name: 'Май', total: 25 },
-    { name: 'Июн', total: 32 },
+const monthNames = [
+    'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+    'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'
 ]
 
+const getLastSixMonths = () => {
+    const months = []
+    const date = new Date()
+
+    for (let i = 5; i >= 0; i--) {
+            const tempDate = new Date(date.getFullYear(), date.getMonth() - i, 1)
+        months.push({
+            name: `${monthNames[tempDate.getMonth()]} ${tempDate.getFullYear()}`,
+            month: tempDate.getMonth(),
+            year: tempDate.getFullYear()
+        })
+    }
+
+        return months
+    }
+
 export function TasksOverview() {
+    const { tasks } = useTasks()
+
+    const chartData = useMemo(() => {
+        const lastSixMonths = getLastSixMonths()
+
+        return lastSixMonths.map(({ name, month, year }) => {
+            const totalVotes = tasks
+                .filter(task => {
+                    const taskDate = new Date(task.createdAt)
+                    return (
+                        taskDate.getMonth() === month &&
+                        taskDate.getFullYear() === year
+                    )
+                })
+                .reduce((sum, task) => sum + task.currentVotes, 0)
+
+            return { name, total: totalVotes }
+        })
+    }, [tasks])
+
     return (
         <Card>
             <CardHeader>
@@ -21,7 +54,7 @@ export function TasksOverview() {
             <CardContent>
                 <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={data}>
+                        <BarChart data={chartData}>
                             <XAxis
                                 dataKey="name"
                                 stroke="#888888"
@@ -34,7 +67,7 @@ export function TasksOverview() {
                                 fontSize={12}
                                 tickLine={false}
                                 axisLine={false}
-                                tickFormatter={(value) => `${value}`}
+                                tickFormatter={(value) => value}
                             />
                             <Bar
                                 dataKey="total"
