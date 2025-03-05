@@ -22,7 +22,7 @@ export function FeedbackSection({ options }: FeedbackSectionProps) {
                 {options.map((option, index) => (
                     <div key={option.id}>
                         <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium">
+                            <div className="flex h-8 w-20 items-center justify-center rounded-full bg-muted text-sm font-medium">
                                 {option.id}
                             </div>
                             <div className="flex items-center gap-2">

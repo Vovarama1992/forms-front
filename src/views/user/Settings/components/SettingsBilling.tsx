@@ -38,27 +38,27 @@ const SettingsBilling = () => {
         window.alert(JSON.stringify(values))
     }
 
-    const {
-        data = {
-            currentPlan: {
-                plan: '',
-                status: '',
-                billingCycle: '',
-                nextPaymentDate: null,
-                amount: null,
-            },
-            paymentMethods: [],
-            transactionHistory: [],
-        },
-    } = useSWR(
-        '/api/settings/billing/',
-        () => apiGetSettingsBilling<GetSettingsBillingResponse>(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
-    )
+    // const {
+    //     data = {
+    //         currentPlan: {
+    //             plan: '',
+    //             status: '',
+    //             billingCycle: '',
+    //             nextPaymentDate: null,
+    //             amount: null,
+    //         },
+    //         paymentMethods: [],
+    //         transactionHistory: [],
+    //     },
+    // } = useSWR(
+    //     '/api/settings/billing/',
+    //     () => apiGetSettingsBilling<GetSettingsBillingResponse>(),
+    //     {
+    //         revalidateOnFocus: false,
+    //         revalidateIfStale: false,
+    //         revalidateOnReconnect: false,
+    //     },
+    // )
 
     return (
         <div>
@@ -79,12 +79,14 @@ const SettingsBilling = () => {
                                     Текущий баланс:  <NumericFormat
                                     className="font-bold heading-text"
                                     displayType="text"
+                                    // value={(
+                                    //     Math.round(
+                                    //         (data.currentPlan.amount || 0) *
+                                    //         100,
+                                    //     ) / 100
+                                    // ).toFixed(2)}
                                     value={(
-                                        Math.round(
-                                            (data.currentPlan.amount || 0) *
-                                            100,
-                                        ) / 100
-                                    ).toFixed(2)}
+                                       11 ).toFixed(2)}
                                     prefix={'₽'}
                                     thousandSeparator={true}
                                 />
@@ -122,10 +124,10 @@ const SettingsBilling = () => {
             </div>
             <div className="mt-8">
                 <h5>История транзакций</h5>
-                <BillingHistory
-                    className="mt-4"
-                    data={data.transactionHistory}
-                />
+                {/*<BillingHistory*/}
+                {/*    className="mt-4"*/}
+                {/*    data={data.transactionHistory}*/}
+                {/*/>*/}
             </div>
         </div>
     )

@@ -35,9 +35,11 @@ export function ResultsGrid({ options }: ResultsGridProps) {
                                 {option.title}
                             </h3>
                             <div className="mt-2 flex items-center gap-2">
-                                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium mr-3 ml-2">
-                                    {option.id}
+
+                                <span className="flex h-6 w-20 rounded-full bg-muted text-xs font-medium mr-3 text-start items-center">
+                                  {option.id}
                                 </span>
+
                                 <span className="text-sm text-muted-foreground">
                                     {option.votes} {' '}
                                     {option.votes === 1

@@ -152,7 +152,7 @@ const TaskStatsView = () => {
         <>
             <div>
                 <h3>Статистика задания</h3>
-                <div className="w-3/3">
+                <div className="w-3/3 mt-2">
                     <div className="flex w-full"></div>
                     {/*{!!task?.inputsStatistics?.length && (*/}
                     {/*    <Card*/}

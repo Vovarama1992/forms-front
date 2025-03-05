@@ -59,7 +59,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
     }
 
     const cardClass = classNames(
-        'rounded-lg border bg-card text-card-foreground shadow-sm',
+        'rounded-lg border bg-card text-card-foreground shadow-sm bg-white',
         className,
         bordered ? 'card-border' : 'card-shadow',
         clickable && 'cursor-pointer user-select-none',
