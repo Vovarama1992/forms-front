@@ -128,8 +128,8 @@ const TaskStatsView = () => {
         ? {
               id: task.taskDetails.label,
               totalVotes:task.totalVotes,
-              expectedVotes:taskAllDetails.expectedVotes,
-              currentVotes:taskAllDetails.currentVotes,
+              expectedVotes: taskAllDetails?.expectedVotes ?? 0,
+              currentVotes: taskAllDetails?.currentVotes ?? 0,
               AIReport: taskAllDetails?.AIReport ?? null,
               status: {
                   complete: true, // Предположим, что опрос завершен
@@ -154,32 +154,32 @@ const TaskStatsView = () => {
                 <h3>Статистика задания</h3>
                 <div className="w-3/3">
                     <div className="flex w-full"></div>
-                    {!!task?.inputsStatistics?.length && (
-                        <Card
-                            className="mt-5"
-                            header={{
-                                content: 'Вопросы и ответы',
-                            }}
-                        >
-                            {task?.inputsStatistics.map((input, index) => {
-                                return (
-                                    <div key={index} className="mb-5">
-                                        <Accordion
-                                            data={[
-                                                {
-                                                    title: input.inputLabel,
-                                                    content: input.answers,
-                                                },
-                                            ]}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </Card>
-                    )}
+                    {/*{!!task?.inputsStatistics?.length && (*/}
+                    {/*    <Card*/}
+                    {/*        className="mt-5"*/}
+                    {/*        header={{*/}
+                    {/*            content: 'Вопросы и ответы',*/}
+                    {/*        }}*/}
+                    {/*    >*/}
+                    {/*        {task?.inputsStatistics.map((input, index) => {*/}
+                    {/*            return (*/}
+                    {/*                <div key={index} className="mb-5">*/}
+                    {/*                    <Accordion*/}
+                    {/*                        data={[*/}
+                    {/*                            {*/}
+                    {/*                                title: input.inputLabel,*/}
+                    {/*                                content: input.answers,*/}
+                    {/*                            },*/}
+                    {/*                        ]}*/}
+                    {/*                    />*/}
+                    {/*                </div>*/}
+                    {/*            )*/}
+                    {/*        })}*/}
+                    {/*    </Card>*/}
+                    {/*)}*/}
                 </div>
                 {/* Отображаем PollResults, если данные есть */}
-                {pollData && <PollResults data={pollData} />}
+                {pollData && <PollResults data={pollData}  task={task}/>}
             </div>
             <ToastContainer />
         </>

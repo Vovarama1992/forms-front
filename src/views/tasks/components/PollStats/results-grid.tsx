@@ -52,7 +52,7 @@ export function ResultsGrid({ options }: ResultsGridProps) {
                             </div>
                         </div>
 
-                        <div className="relative">
+                        <div className="relative pt-2">
 
                             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                                 <div
@@ -67,7 +67,7 @@ export function ResultsGrid({ options }: ResultsGridProps) {
                             </div>
 
 
-                            <span className="absolute right-0 -top-6 text-2xl font-semibold">
+                            <span className="absolute right-0 -top-6 text-2xl font-semibold ">
                               {isNaN(option.percentage) || option.percentage === null || option.percentage === undefined ? '0%' : `${option.percentage}%`}
                             </span>
                         </div>
