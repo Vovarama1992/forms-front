@@ -127,31 +127,32 @@ const TaskStatsView = () => {
     }
     // Преобразуем данные для PollResults
     const createPollData = () => {
-        if (task && taskAllDetails && taskAllDetails.AIreport !== null && taskAllDetails.AIreport !== undefined) {
+        if (task && taskAllDetails) {
             return {
                 id: task.taskDetails.label,
                 totalVotes: task.totalVotes,
                 expectedVotes: taskAllDetails.expectedVotes ?? 0,
                 currentVotes: taskAllDetails.currentVotes ?? 0,
-                AIReport: taskAllDetails.AIreport,
+                AIReport: taskAllDetails.AIreport ?? '', 
                 status: {
                     complete: true,
-                    totalResponses: task.optionsStatistics.reduce(
+                    totalResponses: task.optionsStatistics?.reduce(
                         (sum, option) => sum + option.votesCount,
-                        0,
-                    ),
+                        0
+                    ) ?? 0,
                     duration: '29 минут',
                 },
-                options: task.optionsStatistics.map((option) => ({
+                options: task.optionsStatistics?.map((option) => ({
                     id: option.optionLabel,
                     title: option.optionLabel,
                     votes: option.votesCount,
-                    reasons: option.reasons,
-                })),
+                    reasons: option.reasons ?? [],
+                })) ?? [],
             };
         }
         return null;
     };
+    
 
     const pollData = createPollData();
 
