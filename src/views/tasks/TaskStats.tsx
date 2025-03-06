@@ -71,6 +71,7 @@ const TaskStatsView = () => {
                     id: option.optionLabel,
                     title: option.optionLabel,
                     votes: option.votesCount,
+                    imageUrl: option.imageUrl,
                     reasons: option.reasons ?? [],
                 })) ?? [],
             };

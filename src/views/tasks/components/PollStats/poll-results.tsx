@@ -31,7 +31,6 @@ interface PollResultsProps {
 }
 
 export function PollResults({ data, task, refreshData }: PollResultsProps) {
-    console.log('data', data);
     
     const { label } = useParams<{ label: number }>();
 

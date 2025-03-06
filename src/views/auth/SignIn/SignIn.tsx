@@ -64,13 +64,13 @@ export const SignInBase = ({
             </div>
             <div>
                 <div className="mt-6 text-center">
-                    <span>{`Уже есть аккаунт?`} </span>
+                    <span>{`Аккаунт отсутствует?`} </span>
                     <ActionLink
                         to={signUpUrl}
                         className="heading-text font-bold"
                         themeColor={false}
                     >
-                        Войти
+                        Зарегистрироваться
                     </ActionLink>
                 </div>
             </div>

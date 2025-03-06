@@ -33,7 +33,7 @@ const IsolatedNavigator = ({ ref }: { ref: Ref<IsolatedNavigatorRef> }) => {
 }
 
 function AuthProvider({ children }: AuthProviderProps) {
-
+    const navigate = useNavigate()
     const signedIn = useSessionUser((state) => state.session.signedIn)
     const user = useSessionUser((state) => state.user)
     const setUser = useSessionUser((state) => state.setUser)
@@ -88,11 +88,11 @@ function AuthProvider({ children }: AuthProviderProps) {
             const resp = await apiSignIn(values)
             if (resp) {
                 handleSignIn({ access_token: resp.access_token })
+                navigate('/user/settings');
                 const user = await getUserMe();
                 setUser({
                     ...user
                 })
-                redirect()
                 return {
                     status: 'success',
                     message: '',
@@ -114,12 +114,13 @@ function AuthProvider({ children }: AuthProviderProps) {
     const signUp = async (values: SignUpCredential): AuthResult => {
         try {
             const resp = await apiSignUp(values)
+
             if (resp) {
+                navigate('/sign-in');
                 const user = await getUserMe();
                 setUser({
                     ...user,
                 })
-                redirectToSignIn()
                 return {
                     status: 'success',
                     message: '',

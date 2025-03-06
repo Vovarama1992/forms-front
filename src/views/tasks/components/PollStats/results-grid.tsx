@@ -9,10 +9,12 @@ interface ResultsGridProps {
         votes: number
         percentage: number
         isWinner: boolean
+        imageUrl: string
     }>
 }
 
 export function ResultsGrid({ options }: ResultsGridProps) {
+
     return (
         <div className="grid gap-4 md:grid-cols-3">
             {options.map((option) => (
@@ -31,6 +33,11 @@ export function ResultsGrid({ options }: ResultsGridProps) {
                     )}
                     <div className="p-6">
                         <div className="mb-6">
+                            {option.imageUrl && (
+                                <div className="flex justify-center items-center mb-8 mt-8">
+                                    <img src={option.imageUrl} alt={option.title} className="max-h-48 object-contain" />
+                                </div>
+                            )}
                             <h3 className="text-xl font-semibold ">
                                 {option.title}
                             </h3>
