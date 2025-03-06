@@ -24,6 +24,8 @@ const TaskStatsView = () => {
             if (params.label) {
                 const taskStats = await fetchTaskStatistics(params.label)
                 if (taskStats.taskDetails) {
+                    console.log('fetchTaskStatistics result:', taskStats);
+                    console.log('getTaskById result:', taskAllDetails);
                     setTask(taskStats)
                 }
             } else {
@@ -152,6 +154,14 @@ const TaskStatsView = () => {
     };
 
     const pollData = createPollData();
+
+console.log('task:', task);
+console.log('taskAllDetails:', taskAllDetails);
+console.log('pollData:', pollData);
+
+if (!task) {
+    return <div>Загрузка...</div>;
+}
 
     return (
         <>
