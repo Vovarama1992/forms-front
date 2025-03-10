@@ -1,6 +1,7 @@
 export interface IUserProfile {
     id: number;
     email: string;
+    balance: number | string;
     role: string;
     avatarUrl: string | null; // Предположим, что это строка (URL) или null, если аватар отсутствует
     firstName: string | null; // Имя может быть строкой или null
