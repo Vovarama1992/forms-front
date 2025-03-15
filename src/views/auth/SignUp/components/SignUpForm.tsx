@@ -84,7 +84,7 @@ const SignUpForm = (props: SignUpFormProps) => {
             if (result?.status === 'failed') {
                 setMessage?.(result.message)
             }
-
+            window.dataLayer.push({ event: 'signup' });
             setSubmitting(false)
         }
     }

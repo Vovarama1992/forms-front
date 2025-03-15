@@ -63,7 +63,7 @@ const SignInForm = (props: SignInFormProps) => {
                 setMessage?.(result.message)
             }
         }
-
+        window.dataLayer.push({ event: 'signin' });
         setSubmitting(false)
     }
 

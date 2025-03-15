@@ -92,6 +92,8 @@ const TaskListTable = () => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [toDeleteId, setToDeleteId] = useState<number[] | null>(null)
     const [selectedTasks, setSelectedTasks] = useState<ITaskTableSingle[]>([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [itemsPerPage] = useState(10)
 
     const handleCancel = () => {
         setDeleteConfirmationOpen(false)
@@ -160,19 +162,25 @@ const TaskListTable = () => {
     const { tasks, setTasks } = useTasks()
 
     useEffect(() => {
-        async function getData() {
-            try {
-                const tasks = await apiTaskFetch()
-                setTasks(tasks)
-            } catch (e) {
-                const error = e as AxiosError<{ message: string }>
-                toast.error(error.message)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        getData()
+        fetchData()
     }, [])
+
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            const tasks = await apiTaskFetch()
+            setTasks(tasks)
+        } catch (e) {
+            const error = e as AxiosError<{ message: string }>
+            toast.error(error.message)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const indexOfLastTask = currentPage * itemsPerPage
+    const indexOfFirstTask = indexOfLastTask - itemsPerPage
+    const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask)
 
     const columns: ColumnDef<ITaskTable>[] = useMemo(
         () => [
@@ -323,17 +331,23 @@ const TaskListTable = () => {
             setSelectedTasks([])
         }
     }
-    console.log(tasks);
+
+
+    const totalPages = Math.ceil(tasks.length / itemsPerPage)
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page)
+    }
     return (
         <>
             <DataTable
                 compact
                 overflow
                 columns={columns}
-                data={tasks}
+                data={currentTasks}
                 noData={tasks.length === 0}
                 loading={isLoading}
-                isPagination={false}
+                isPagination={true}
                 className="task-custom-table"
                 /*                checkboxChecked={(row) =>
                     selectedProduct.some((selected) => selected.id === row.id)
@@ -341,6 +355,12 @@ const TaskListTable = () => {
                 onSort={handleSort}
                 onCheckBoxChange={handleRowSelect}
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
+                onPaginationChange={handlePageChange}
+                pagingData={{
+                    total: tasks.length,
+                    pageIndex: currentPage,
+                    pageSize: itemsPerPage,
+                }}
             />
             {selectedTasks.length > 0 && (
                 <div>

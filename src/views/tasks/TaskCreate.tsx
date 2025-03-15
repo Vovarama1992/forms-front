@@ -81,7 +81,7 @@ const TaskCreateView = () => {
                 });
             }
 
-
+            window.dataLayer.push({ event: 'create_task' });
             toast.success('Задание успешно создано');
             reset({ ...defaultValues });
             navigate('/tasks-view-list');
