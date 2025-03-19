@@ -166,21 +166,21 @@ const TaskListTable = () => {
     }, [])
 
     const fetchData = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const tasks = await apiTaskFetch()
-            setTasks(tasks)
+            const tasks = await apiTaskFetch();
+            setTasks(tasks || []);  // Гарантируем, что `tasks` всегда массив
         } catch (e) {
-            const error = e as AxiosError<{ message: string }>
-            toast.error(error.message)
+            const error = e as AxiosError<{ message: string }>;
+            toast.error(error.message);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     const indexOfLastTask = currentPage * itemsPerPage
     const indexOfFirstTask = indexOfLastTask - itemsPerPage
-    const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask)
+    const currentTasks = Array.isArray(tasks) ? tasks.slice(indexOfFirstTask, indexOfLastTask) : [];
 
     const columns: ColumnDef<ITaskTable>[] = useMemo(
         () => [
@@ -273,35 +273,32 @@ const TaskListTable = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
     )
-
     const handleSort = (sort: OnSortParam) => {
-        const { order, key } = sort
+        const { order, key } = sort;
         if (
-            order.toLocaleLowerCase() === 'asc' ||
-            order.toLocaleLowerCase() === 'desc'
+            order.toLowerCase() === 'asc' ||
+            order.toLowerCase() === 'desc'
         ) {
-            const sortedTasks = [...tasks]
-
-            sortedTasks.sort((a, b) => {
-                const valueA = a[key]
-                const valueB = b[key]
-
+            const sortedTasks = [...tasks].sort((a, b) => {
+                const valueA = a[key] ?? ''; // Защита от undefined
+                const valueB = b[key] ?? '';
+    
                 if (typeof valueA === 'number' && typeof valueB === 'number') {
                     return order.toLowerCase() === 'asc'
                         ? valueA - valueB
-                        : valueB - valueA
+                        : valueB - valueA;
                 }
-
+    
                 if (typeof valueA === 'string' && typeof valueB === 'string') {
                     return order.toLowerCase() === 'asc'
                         ? valueA.localeCompare(valueB)
-                        : valueB.localeCompare(valueA)
+                        : valueB.localeCompare(valueA);
                 }
-                return 0
-            })
-            setTasks(sortedTasks)
+                return 0;
+            });
+            setTasks(sortedTasks);
         }
-    }
+    };
 
     const handleRowSelect = (checked: boolean, row: ITaskTableSingle) => {
         const prevData = selectedTasks.concat()

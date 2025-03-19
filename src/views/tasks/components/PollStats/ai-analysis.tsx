@@ -62,36 +62,52 @@ export function AIAnalysis({ AIReport }: AIAnalysisProps) {
                 </div>
                 <div>
                     <strong>Анализ креативов:</strong>
-                    {AIReport.creatives.map((creative) => (
-                        <div key={creative.id} className="border p-3 rounded-md mt-4">
-                            <p><strong>ID:</strong> {creative.id}</p>
-                            <p><strong>Общий рейтинг:</strong> {creative.analysis.overall_score}</p>
-                            <div>
-                                <strong>Сильные стороны:</strong>
-                                <ul className="list-disc pl-5">
-                                    {creative.analysis.strengths.map((s, index) => (
-                                        <li key={index}>{s}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>Слабые стороны:</strong>
-                                <ul className="list-disc pl-5">
-                                    {creative.analysis.weaknesses.map((w, index) => (
-                                        <li key={index}>{w}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>Рекомендации:</strong>
-                                <ul className="list-disc pl-5">
-                                    {creative.analysis.recommendations.map((r, index) => (
-                                        <li key={index}>{r}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    ))}
+                    {AIReport?.creatives?.length ? (
+    AIReport.creatives.map((creative) => (
+        <div key={creative.id} className="border p-3 rounded-md mt-4">
+            <p><strong>ID:</strong> {creative.id}</p>
+            <p><strong>Общий рейтинг:</strong> {creative.analysis?.overall_score ?? 'Нет данных'}</p>
+            <div>
+                <strong>Сильные стороны:</strong>
+                <ul className="list-disc pl-5">
+                    {creative.analysis?.strengths?.length ? (
+                        creative.analysis.strengths.map((s, index) => (
+                            <li key={index}>{s}</li>
+                        ))
+                    ) : (
+                        <li>Нет данных</li>
+                    )}
+                </ul>
+            </div>
+            <div>
+                <strong>Слабые стороны:</strong>
+                <ul className="list-disc pl-5">
+                    {creative.analysis?.weaknesses?.length ? (
+                        creative.analysis.weaknesses.map((w, index) => (
+                            <li key={index}>{w}</li>
+                        ))
+                    ) : (
+                        <li>Нет данных</li>
+                    )}
+                </ul>
+            </div>
+            <div>
+                <strong>Рекомендации:</strong>
+                <ul className="list-disc pl-5">
+                    {creative.analysis?.recommendations?.length ? (
+                        creative.analysis.recommendations.map((r, index) => (
+                            <li key={index}>{r}</li>
+                        ))
+                    ) : (
+                        <li>Нет данных</li>
+                    )}
+                </ul>
+            </div>
+        </div>
+    ))
+) : (
+    <p>Нет данных по креативам</p>
+)}
                 </div>
             </CardContent>
         </Card>

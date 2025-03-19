@@ -21,8 +21,12 @@ export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCrea
     })
 }
 
+interface ApiResponse {
+    tasks: ITaskTable[];
+}
+
 export async function apiTaskFetch(): Promise<ITaskTable[]> {
-    const response = await ApiService.fetchDataWithAxios({
+    const response = await ApiService.fetchDataWithAxios<ApiResponse>({
         url: endpointConfig.tasks.myTasks,
         method: 'get',
         headers: {
@@ -30,14 +34,12 @@ export async function apiTaskFetch(): Promise<ITaskTable[]> {
         },
     });
 
-    
-    if (response && typeof response === 'object' && 'tasks' in response && Array.isArray(response.tasks)) {
-        return response.tasks; 
+    if (response && Array.isArray(response.tasks)) {
+        return response.tasks; // Просто возвращаем массив без изменений
     } else {
         throw new Error("Некорректный ответ API: отсутствует массив tasks");
     }
 }
-
 export async function apiTasksDelete(ids: number[]): Promise<string> {
     return ApiService.fetchDataWithAxios({
         url: endpointConfig.tasks.tasks,
