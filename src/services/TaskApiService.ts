@@ -22,13 +22,20 @@ export async function apiTaskCreate(data: ITaskCreateRequest): Promise<ITaskCrea
 }
 
 export async function apiTaskFetch(): Promise<ITaskTable[]> {
-    return ApiService.fetchDataWithAxios({
+    const response = await ApiService.fetchDataWithAxios({
         url: endpointConfig.tasks.myTasks,
         method: 'get',
         headers: {
             'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
         },
-    })
+    });
+
+    
+    if (response && typeof response === 'object' && 'tasks' in response && Array.isArray(response.tasks)) {
+        return response.tasks; 
+    } else {
+        throw new Error("Некорректный ответ API: отсутствует массив tasks");
+    }
 }
 
 export async function apiTasksDelete(ids: number[]): Promise<string> {
