@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useMemo } from 'react';
 
 interface AIAnalysisProps {
-    AIReport: {
+    AIReport: string | {
         taskId: string;
         bestCreative: string;
         reasoning: string;
@@ -31,7 +32,20 @@ interface AIAnalysisProps {
 }
 
 export function AIAnalysis({ AIReport }: AIAnalysisProps) {
-    if (!AIReport) {
+    // Если AIReport строка — пробуем распарсить JSON
+    const parsedAIReport = useMemo(() => {
+        if (!AIReport) return null;
+        if (typeof AIReport === 'string') {
+            try {
+                return JSON.parse(AIReport);
+            } catch {
+                return null;
+            }
+        }
+        return AIReport;
+    }, [AIReport]);
+
+    if (!parsedAIReport) {
         return (
             <Card>
                 <CardHeader>
@@ -50,64 +64,61 @@ export function AIAnalysis({ AIReport }: AIAnalysisProps) {
                 <CardTitle>Отчет от AI менеджера</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-                <p><strong>Лучший креатив:</strong> {AIReport.bestCreative}</p>
-                <p><strong>Обоснование:</strong> {AIReport.reasoning}</p>
+                <p><strong>Лучший креатив:</strong> {parsedAIReport.bestCreative ?? 'Нет данных'}</p>
+                <p><strong>Обоснование:</strong> {parsedAIReport.reasoning ?? 'Нет данных'}</p>
+                
                 <div>
                     <strong>Рекомендации:</strong>
                     <ul className="list-disc pl-5">
-                        {AIReport.suggestions.map((suggestion, index) => (
-                            <li key={index}>{suggestion}</li>
-                        ))}
+                        {parsedAIReport.suggestions?.length ? (
+                            parsedAIReport.suggestions.map((suggestion, index) => (
+                                <li key={index}>{suggestion}</li>
+                            ))
+                        ) : (
+                            <li>Нет рекомендаций</li>
+                        )}
                     </ul>
                 </div>
+
                 <div>
                     <strong>Анализ креативов:</strong>
-                    {AIReport?.creatives?.length ? (
-    AIReport.creatives.map((creative) => (
-        <div key={creative.id} className="border p-3 rounded-md mt-4">
-            <p><strong>ID:</strong> {creative.id}</p>
-            <p><strong>Общий рейтинг:</strong> {creative.analysis?.overall_score ?? 'Нет данных'}</p>
-            <div>
-                <strong>Сильные стороны:</strong>
-                <ul className="list-disc pl-5">
-                    {creative.analysis?.strengths?.length ? (
-                        creative.analysis.strengths.map((s, index) => (
-                            <li key={index}>{s}</li>
+                    {parsedAIReport.creatives?.length ? (
+                        parsedAIReport.creatives.map((creative) => (
+                            <div key={creative.id} className="border p-3 rounded-md mt-4">
+                                <p><strong>ID:</strong> {creative.id}</p>
+                                <p><strong>Общий рейтинг:</strong> {creative.analysis?.overall_score ?? 'Нет данных'}</p>
+                                
+                                <div>
+                                    <strong>Сильные стороны:</strong>
+                                    <ul className="list-disc pl-5">
+                                        {creative.analysis?.strengths?.map((s, index) => (
+                                            <li key={index}>{s}</li>
+                                        )) ?? <li>Нет данных</li>}
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <strong>Слабые стороны:</strong>
+                                    <ul className="list-disc pl-5">
+                                        {creative.analysis?.weaknesses?.map((w, index) => (
+                                            <li key={index}>{w}</li>
+                                        )) ?? <li>Нет данных</li>}
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <strong>Рекомендации:</strong>
+                                    <ul className="list-disc pl-5">
+                                        {creative.analysis?.recommendations?.map((r, index) => (
+                                            <li key={index}>{r}</li>
+                                        )) ?? <li>Нет данных</li>}
+                                    </ul>
+                                </div>
+                            </div>
                         ))
                     ) : (
-                        <li>Нет данных</li>
+                        <p>Нет данных по креативам</p>
                     )}
-                </ul>
-            </div>
-            <div>
-                <strong>Слабые стороны:</strong>
-                <ul className="list-disc pl-5">
-                    {creative.analysis?.weaknesses?.length ? (
-                        creative.analysis.weaknesses.map((w, index) => (
-                            <li key={index}>{w}</li>
-                        ))
-                    ) : (
-                        <li>Нет данных</li>
-                    )}
-                </ul>
-            </div>
-            <div>
-                <strong>Рекомендации:</strong>
-                <ul className="list-disc pl-5">
-                    {creative.analysis?.recommendations?.length ? (
-                        creative.analysis.recommendations.map((r, index) => (
-                            <li key={index}>{r}</li>
-                        ))
-                    ) : (
-                        <li>Нет данных</li>
-                    )}
-                </ul>
-            </div>
-        </div>
-    ))
-) : (
-    <p>Нет данных по креативам</p>
-)}
                 </div>
             </CardContent>
         </Card>
