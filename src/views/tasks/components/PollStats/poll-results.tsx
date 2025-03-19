@@ -11,7 +11,33 @@ interface PollResultsProps {
     data: {
         id: string;
         totalVotes: number;
-        AIReport: string;
+        AIReport: {
+            taskId: string;
+            bestCreative: string;
+            reasoning: string;
+            suggestions: string[];
+            creatives: {
+                id: string;
+                analysis: {
+                    overall_score: number;
+                    strengths: string[];
+                    weaknesses: string[];
+                    recommendations: string[];
+                };
+                visual_analysis: {
+                    dominant_colors: string[];
+                    contrast_ratio: number;
+                    text_readability: string;
+                    object_focus: string;
+                    emotion_detected: string;
+                };
+                performance_prediction: {
+                    engagement_score: number;
+                    conversion_likelihood: number;
+                    expected_CTR: string;
+                };
+            }[];
+        } | null;
         expectedVotes: number;
         currentVotes: number;
         status: {
